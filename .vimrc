@@ -175,10 +175,7 @@ let g:deoplete#enable_at_startup=1
 " tern
 if exists('g:plugs["tern_for_vim"]')
   let g:deoplete#omni#functions = {}
-  let g:deoplete#omni#functions.javascript = [
-    \ 'tern#Complete',
-    \ 'jspc#omni'
-  \]
+  let g:deoplete#omni#functions.javascript = [ 'tern#Complete' ]
 endif
 " deoplete-ternjs
 let g:tern_request_timeout=1
@@ -195,8 +192,8 @@ let g:deoplete#ignore_sources.php = ['omni']
 
 " ultisnips
 let g:UltiSnipsExpandTrigger="<c-j>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 
 function! g:AutoCompleteOrSnippetsOrReturnTab()
  if pumvisible()
@@ -244,7 +241,6 @@ let g:go_highlight_structs = 1
 let g:go_highlight_interfaces = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
-autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
 autocmd FileType go nmap <leader>r <Plug>(go-run)
 autocmd FileType go nmap <leader>b <Plug>(go-build)
 autocmd FileType go nmap <leader>t <Plug>(go-test)
