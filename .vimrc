@@ -141,7 +141,6 @@ nnoremap <Leader>nh :noh<cr><c-l>
 nnoremap <Leader><tab> :b#<cr>
 nnoremap <Leader>[ :bp<cr>
 nnoremap <Leader>] :bn<cr>
-nnoremap <cr> za
 
 " indent visual selected code without unselecting and going back to normal mode
 vmap <tab> >gv
