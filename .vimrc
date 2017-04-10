@@ -142,6 +142,9 @@ nnoremap <Leader><tab> :b#<cr>
 nnoremap <Leader>[ :bp<cr>
 nnoremap <Leader>] :bn<cr>
 
+" write read-only file
+cmap w!! w !sudo tee % >/dev/null
+
 " indent visual selected code without unselecting and going back to normal mode
 vmap <tab> >gv
 vmap <s-tab> <gv

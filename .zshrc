@@ -21,7 +21,7 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
-export GOPATH=/mnt/c/Users/BaoNH/Projects/Home/golang
+export GOPATH="$HOME/Projects/go"
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 
 # Preferred editor for local and remote sessions
