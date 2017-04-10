@@ -24,13 +24,13 @@ if [[ $nvim == "y" ]] || [[ $nvim == "Y" ]] ; then
     sudo apt-get update
     sudo apt-get install neovim
     sudo apt-get install python-dev python-pip python3-dev python3-pip
-		pip2 install neovim
-		pip3 install neovim
+    pip2 install neovim
+    pip3 install neovim
 fi
 
 echo -n "Install Go? (y/N) => "; read go
 if [[ $go == "y" ]] || [[ $go == "Y" ]] ; then
-		sudo apt-get install golang-1.8-go
+    sudo apt-get install golang-1.8-go
 fi
 
 echo -n "Install PHP? (y/N) => "; read php
