@@ -57,8 +57,12 @@ fi
 echo -n "Copy dotfiles to local? (y/N) => "; read co
 if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
     echo "Backing up old dotfiles"
-    mv ~/.zshrc ~/.zshrc.$(date +%s)
-    mv ~/.tmux.conf ~/.tmux.conf.$(date +%s)
+    if [[ -f ~/.zshrc ]]; then
+        mv ~/.zshrc ~/.zshrc.$(date +%s)
+    fi
+    if [[ -f ~/.tmux.conf ]]; then
+        mv ~/.tmux.conf ~/.tmux.conf.$(date +%s)
+    fi
     if [[ -d ~/.vim ]]; then
         mv ~/.vim ~/.vim.$(date +%s)
     fi
