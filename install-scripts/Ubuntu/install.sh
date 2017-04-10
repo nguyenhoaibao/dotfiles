@@ -56,8 +56,12 @@ if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
     echo "Backing up old dotfiles"
     mv ~/.zshrc ~/.zshrc.$(date +%s)
     mv ~/.tmux.conf ~/.tmux.conf.$(date +%s)
-    mv ~/.vim ~/.vim.$(date +%s)
-    mv ~/.vimrc ~/.vimrc.$(date +%s)
+    if [[ -d ~/.vim ]]; then
+        mv ~/.vim ~/.vim.$(date +%s)
+    fi
+    if [[ -f ~/.vimrc ]]; then
+        mv ~/.vimrc ~/.vimrc.$(date +%s)
+    fi
 
     echo "Copying dotfiles"
     cp ../../.zshrc ~/.zshrc
