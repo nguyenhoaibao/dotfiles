@@ -30,7 +30,9 @@ fi
 
 echo -n "Install Go? (y/N) => "; read go
 if [[ $go == "y" ]] || [[ $go == "Y" ]] ; then
-    sudo apt-get install -y golang-1.8-go
+    sudo add-apt-repository -y ppa:longsleep/golang-backports
+    sudo apt-get update -y
+    sudo apt-get install -y golang-go
 fi
 
 echo -n "Install PHP? (y/N) => "; read php
