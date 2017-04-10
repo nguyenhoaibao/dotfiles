@@ -2,16 +2,16 @@
 
 echo -n "Install all base packages (y/N) => "; read answer
 if [[ $answer != "n" ]] && [[ $answer != "N" ]] ; then
-    sudo apt-get -y install zsh
-    sudo apt-get install zsh-syntax-highlighting
+    sudo apt-get install -y zsh
+    sudo apt-get install -y zsh-syntax-highlighting
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-    sudo apt-get install tmux
-    sudo apt-get install silversearcher-ag
+    sudo apt-get install -y tmux
+    sudo apt-get install -y silversearcher-ag
 fi
 
 echo -n "Install NodeJS? (y/N) => "; read nodejs
 if [[ $nodejs == "y" ]] || [[ $nodejs == "Y" ]] ; then
-    sh -c $(curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh)
+    sh -c "$(curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh)"
     . $HOME/.nvm/nvm.sh
     nvm install stable
     nvm alias default node
@@ -19,18 +19,18 @@ fi
 
 echo -n "Install neovim? (y/N) => "; read nvim
 if [[ $nvim == "y" ]] || [[ $nvim == "Y" ]] ; then
-    sudo apt-get install software-properties-common
-    sudo add-apt-repository ppa:neovim-ppa/stable
-    sudo apt-get update
-    sudo apt-get install neovim
-    sudo apt-get install python-dev python-pip python3-dev python3-pip
+    sudo apt-get install -y software-properties-common
+    sudo add-apt-repository -y ppa:neovim-ppa/stable
+    sudo apt-get update -y
+    sudo apt-get install -y neovim
+    sudo apt-get install -y python-dev python-pip python3-dev python3-pip
     pip2 install neovim
     pip3 install neovim
 fi
 
 echo -n "Install Go? (y/N) => "; read go
 if [[ $go == "y" ]] || [[ $go == "Y" ]] ; then
-    sudo apt-get install golang-1.8-go
+    sudo apt-get install -y golang-1.8-go
 fi
 
 echo -n "Install PHP? (y/N) => "; read php
@@ -51,8 +51,8 @@ if [[ $php == "y" ]] || [[ $php == "Y" ]] ; then
     sudo mv composer.phar /usr/local/bin/composer
 fi
 
-echo -n "Copy dotfiles to local? (y/N) => "; read co
-if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
+echo -n "Copy dotfiles to local? (y/N) => "; read cp
+if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
     echo "Backing up old dotfiles"
     if [[ -f ~/.zshrc ]]; then
         mv ~/.zshrc ~/.zshrc.$(date +%s)
