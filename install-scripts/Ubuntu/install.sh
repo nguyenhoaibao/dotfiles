@@ -37,14 +37,26 @@ fi
 
 echo -n "Install PHP? (y/N) => "; read php
 if [[ $php == "y" ]] || [[ $php == "Y" ]] ; then
-    #sudo apt-get install libbz2-dev
+    sudo apt-get build-dep php5
+    sudo apt-get install -y php5 php5-dev php-pear autoconf automake curl libcurl3-openssl-dev build-essential libxslt1-dev re2c libxml2 libxml2-dev php5-cli bison libbz2-dev libreadline-dev
+    sudo apt-get install -y libfreetype6 libfreetype6-dev libpng12-0 libpng12-dev libjpeg-dev libjpeg8-dev libjpeg8  libgd-dev libgd3 libxpm4 libltdl7 libltdl-dev
+    sudo apt-get install -y libssl-dev openssl
+    sudo apt-get install -y gettext libgettextpo-dev libgettextpo0
+    sudo apt-get install -y libicu-dev
+    sudo apt-get install -y libmhash-dev libmhash2
+    sudo apt-get install -y libmcrypt-dev libmcrypt4
+
     curl -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew
     chmod +x phpbrew
 
     sudo mv phpbrew /usr/local/bin/phpbrew
-    phpbrew install 7.0 +default+dbs
+    phpbrew init
+    . ~/.phpbrew/bashrc
+    phpbrew install 7.0
     phpbrew ext install mongo
     phpbrew ext enable mongo
+
+    phpbrew use
 
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     php -r "if (hash_file('SHA384', 'composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"

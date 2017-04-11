@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo -n "Install all base packages (Y/n) => "; read answer
-if [[ $answer != "n" ]] && [[ $answer != "N" ]] ; then
+echo -n "Install all base packages (Y/n) => "; read base
+if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     brew update
 
@@ -39,13 +39,27 @@ fi
 
 echo -n "Install PHP? (y/N) => "; read php
 if [[ $php == "y" ]] || [[ $php == "Y" ]] ; then
+    xcode=$(xcode-select -p)
+    if [[ -z "$xcode" ]] ; then
+        echo "Please install Xcode Command Line tools by xcode-select --install. Then run this script again."
+        exit 1
+    fi
+    brew install automake autoconf curl pcre bison re2c mhash libtool icu4c gettext jpeg openssl libxml2 mcrypt gmp libevent
+    brew link icu4c
+    brew link --force openssl
+    brew link --force libxml2
+
     curl -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew
     chmod +x phpbrew
 
     sudo mv phpbrew /usr/local/bin/phpbrew
-    phpbrew install 7.0 +default+dbs
+    phpbrew init
+    . ~/.phpbrew/bashrc
+    phpbrew install 7.0
     phpbrew ext install mongo
     phpbrew ext enable mongo
+
+    phpbrew use
 
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     php -r "if (hash_file('SHA384', 'composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
