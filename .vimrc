@@ -26,6 +26,7 @@ Plug 'tpope/vim-dispatch'
 Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer update'}
 
 Plug 'neomake/neomake'
+Plug 'tpope/vim-surround'
 Plug 'jiangmiao/auto-pairs'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'christoomey/vim-tmux-navigator'
