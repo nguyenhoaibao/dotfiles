@@ -1,4 +1,9 @@
-call plug#begin('~/.vim/bundle')
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+call plug#begin('~/.config/nvim/bundle')
 
 Plug 'dracula/vim'
 Plug 'vim-airline/vim-airline'
@@ -53,6 +58,8 @@ set splitbelow
 set splitright
 set autoread
 set autowrite
+set ignorecase
+set smartcase
 set backspace=2
 set clipboard=unnamedplus
 filetype plugin indent on
@@ -74,6 +81,15 @@ set foldnestmax=5
 set foldlevel=5
 set foldlevelstart=5
 set nofoldenable
+
+" persistent undo
+if has('persistent_undo')
+  call system('mkdir -p ~/.config/nvim/undo')
+  set undofile
+  set undodir=~/.config/nvim/undo
+  set undolevels=1000
+  set undoreload=10000
+endif
 
 " Colors
 set t_Co=256

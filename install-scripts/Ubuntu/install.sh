@@ -85,7 +85,6 @@ if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
     echo "Copying dotfiles"
     cp .zshrc ~/.zshrc
     cp .tmux.conf ~/.tmux.conf
-    mkdir ~/.vim
-    cp -R vim/* ~/.vim/
-    cp .vimrc ~/.vimrc
+    mkdir -p ~/.config
+    cp -R nvim ~/.config
 fi

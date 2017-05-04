@@ -25,8 +25,6 @@ fi
 echo -n "Install neovim? (y/N) => "; read nvim
 if [[ $nvim == "y" ]] || [[ $nvim == "Y" ]] ; then
     brew install neovim/neovim/neovim
-    curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     brew install python3
     pip2 install neovim
     pip3 install neovim
@@ -88,7 +86,6 @@ if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
     echo "Copying dotfiles"
     cp .zshrc ~/.zshrc
     cp .tmux.conf ~/.tmux.conf
-    mkdir ~/.vim
-    cp -R vim/* ~/.vim/
-    cp .vimrc ~/.vimrc
+    mkdir -p ~/.config
+    cp -R nvim ~/.config
 fi
