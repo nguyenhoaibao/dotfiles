@@ -32,7 +32,15 @@ fi
 
 echo -n "Install Go? (y/N) => "; read go
 if [[ $go == "y" ]] || [[ $go == "Y" ]] ; then
-    brew install go
+    goversion="1.8.1"
+    goos="darwin"
+    goarch="amd64"
+    goname="go$goversion.$goos-$goarch.tar.gz"
+    godl="https://storage.googleapis.com/golang/$goname"
+
+    wget $godl
+    sudo tar -C /usr/local -xvzf $goname
+    rm -f $goname
 fi
 
 echo -n "Install PHP? (y/N) => "; read php
@@ -84,8 +92,8 @@ if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
     fi
 
     echo "Copying dotfiles"
-    cp .zshrc ~/.zshrc
-    cp .tmux.conf ~/.tmux.conf
+    cp zshrc ~/.zshrc
+    cp tmux.conf ~/.tmux.conf
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi
