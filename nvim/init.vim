@@ -158,6 +158,12 @@ nnoremap <Leader>nh :noh<cr><c-l>
 nnoremap <Leader><tab> :b#<cr>
 nnoremap <Leader>[ :bp<cr>
 nnoremap <Leader>] :bn<cr>
+nnoremap <Leader>qn :cnext<cr>
+nnoremap <Leader>qm :cprevious<cr>
+nnoremap <Leader>qc :cclose<cr>
+nnoremap <Leader>ln :lnext<cr>
+nnoremap <Leader>lm :lprevious<cr>
+nnoremap <Leader>lc :lclose<cr>
 
 " write read-only file
 cmap w!! w !sudo tee % >/dev/null
