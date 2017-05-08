@@ -4,9 +4,9 @@ echo -n "Install all base packages (y/N) => "; read base
 if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     sudo apt-get install -y zsh
     sudo apt-get install -y zsh-syntax-highlighting
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     sudo apt-get install -y tmux
     sudo apt-get install -y silversearcher-ag
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
 
 echo -n "Install NodeJS? (y/N) => "; read nodejs

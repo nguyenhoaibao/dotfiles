@@ -7,11 +7,12 @@ if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
 
     brew install zsh
     brew install zsh-syntax-highlighting
-    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
     brew install reattach-to-user-namespace
     brew install tmux
     brew install the_silver_searcher
+    brew tap caskroom/cask
     brew cask install iterm2
+    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
 
 echo -n "Install NodeJS? (y/N) => "; read nodejs
