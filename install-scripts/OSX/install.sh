@@ -11,6 +11,7 @@ if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     brew install reattach-to-user-namespace
     brew install tmux
     brew install the_silver_searcher
+    brew tap caskroom/cask
     brew cask install iterm2
 fi
 
