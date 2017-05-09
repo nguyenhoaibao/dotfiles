@@ -6,6 +6,7 @@ if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     sudo apt-get install -y zsh-syntax-highlighting
     sudo apt-get install -y tmux
     sudo apt-get install -y silversearcher-ag
+    sudo apt-get install -y xclip
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
 
@@ -90,7 +91,7 @@ if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
 
     echo "Copying dotfiles"
     cp zshrc ~/.zshrc
-    cp tmux.conf ~/.tmux.conf
+    cp tmux.linux.conf ~/.tmux.conf
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi

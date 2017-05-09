@@ -10,6 +10,7 @@ if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     brew install reattach-to-user-namespace
     brew install tmux
     brew install the_silver_searcher
+    brew install wget curl
     brew tap caskroom/cask
     brew cask install iterm2
     sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
@@ -62,7 +63,8 @@ if [[ $php == "y" ]] || [[ $php == "Y" ]] ; then
     sudo mv phpbrew /usr/local/bin/phpbrew
     phpbrew init
     . ~/.phpbrew/bashrc
-    phpbrew install 7.0
+    # Must add openssl variant explicity, see https://github.com/phpbrew/phpbrew/issues/612#issuecomment-271051499
+    phpbrew install 7.1 +default +fpm +openssl
     phpbrew ext install mongo
     phpbrew ext enable mongo
 
@@ -94,7 +96,7 @@ if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
 
     echo "Copying dotfiles"
     cp zshrc ~/.zshrc
-    cp tmux.conf ~/.tmux.conf
+    cp tmux.macos.conf ~/.tmux.conf
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi
