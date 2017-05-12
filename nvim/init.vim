@@ -158,11 +158,11 @@ nnoremap <Leader>nh :noh<cr><c-l>
 nnoremap <Leader><tab> :b#<cr>
 nnoremap <Leader>[ :bp<cr>
 nnoremap <Leader>] :bn<cr>
-nnoremap <Leader>qn :cnext<cr>
-nnoremap <Leader>qm :cprevious<cr>
+nnoremap ]q :cnext<cr>
+nnoremap [q :cprevious<cr>
 nnoremap <Leader>qc :cclose<cr>
-nnoremap <Leader>ln :lnext<cr>
-nnoremap <Leader>lm :lprevious<cr>
+nnoremap ]w :lnext<cr>
+nnoremap [w :lprevious<cr>
 nnoremap <Leader>lc :lclose<cr>
 
 " write read-only file
