@@ -7,6 +7,7 @@ if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     sudo apt-get install -y tmux
     sudo apt-get install -y silversearcher-ag
     sudo apt-get install -y xclip
+    sudo apt-get install -y exuberant-ctags
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
 
@@ -88,10 +89,14 @@ if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
     if [[ -f ~/.vimrc ]]; then
         mv ~/.vimrc ~/.vimrc.$(date +%s)
     fi
+    if [[ -f ~/.ctags ]]; then
+        mv ~/.ctags ~/.ctags.$(date +%s)
+    fi
 
     echo "Copying dotfiles"
     cp zshrc ~/.zshrc
     cp tmux.linux.conf ~/.tmux.conf
+    cp ctags ~/.ctags
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi

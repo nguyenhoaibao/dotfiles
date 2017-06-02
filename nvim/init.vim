@@ -62,6 +62,7 @@ set ignorecase
 set smartcase
 set backspace=2
 set clipboard=unnamedplus
+set tags=./tags;,tags;
 filetype plugin indent on
 
 " Softtabs
@@ -192,8 +193,10 @@ let g:NERDTrimTrailingWhiteSpace = 1
 " fzf.vim
 let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 let g:fzf_layout = { 'down': '~25%' }
+let g:fzf_tags_command = 'ctags -R --exclude=.git --exclude=node_modules'
 nnoremap <Leader>pf :Files<cr>
 nnoremap <Leader>pb :Buffers<cr>
+nnoremap <Leader>pt :Tags<cr>
 
 " deoplete
 let g:deoplete#enable_at_startup=1

@@ -10,6 +10,7 @@ if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     brew install reattach-to-user-namespace
     brew install tmux
     brew install the_silver_searcher
+    brew install ctags
     brew install wget curl
     brew tap caskroom/cask
     brew cask install iterm2
@@ -93,10 +94,14 @@ if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
     if [[ -f ~/.vimrc ]]; then
         mv ~/.vimrc ~/.vimrc.$(date +%s)
     fi
+    if [[ -f ~/.ctags ]]; then
+        mv ~/.ctags ~/.ctags.$(date +%s)
+    fi
 
     echo "Copying dotfiles"
     cp zshrc ~/.zshrc
     cp tmux.macos.conf ~/.tmux.conf
+    cp ctags ~/.ctags
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi
