@@ -35,6 +35,7 @@ Plug 'tpope/vim-surround'
 Plug 'jiangmiao/auto-pairs'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'terryma/vim-multiple-cursors'
 
 call plug#end()
 
@@ -220,7 +221,7 @@ let g:deoplete#ignore_sources.php = ['omni']
 
 " ultisnips
 let g:UltiSnipsExpandTrigger="<c-j>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigner="<c-f>"
 let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 
 function! g:AutoCompleteOrSnippetsOrReturnTab()
