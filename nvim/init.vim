@@ -160,11 +160,15 @@ nnoremap <Leader>nh :noh<cr><c-l>
 nnoremap <Leader><tab> :b#<cr>
 nnoremap <Leader>[ :bp<cr>
 nnoremap <Leader>] :bn<cr>
-nnoremap ]q :cnext<cr>
 nnoremap [q :cprevious<cr>
+nnoremap ]q :cnext<cr>
+nnoremap [Q :cfirst<cr>
+nnoremap ]Q :clast<cr>
 nnoremap <Leader>qc :cclose<cr>
-nnoremap ]w :lnext<cr>
 nnoremap [w :lprevious<cr>
+nnoremap ]w :lnext<cr>
+nnoremap [W :lfirst<cr>
+nnoremap ]W :llast<cr>
 nnoremap <Leader>lc :lclose<cr>
 
 " write read-only file
@@ -240,7 +244,7 @@ endfunction
 
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr><cr> pumvisible() ? deoplete#mappings#close_popup() : "\<cr>"
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
 
 " neomake
 autocmd! BufWritePost * Neomake
