@@ -112,7 +112,7 @@ augroup vimrcEx
   " Set syntax highlighting for specific file types
   autocmd BufRead,BufNewFile *.md set filetype=markdown
   autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
-  autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 softtabstop=4 shiftwidth=4
+  autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=8 softtabstop=8 shiftwidth=8
   autocmd BufNewFile,BufRead *.php setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=4
   autocmd BufEnter * EnableStripWhitespaceOnSave
 augroup END
