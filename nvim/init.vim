@@ -5,37 +5,35 @@ if empty(glob('~/.config/nvim/autoload/plug.vim'))
 endif
 call plug#begin('~/.config/nvim/bundle')
 
+" General plugins
+" Plug 'neomake/neomake'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
+Plug 'w0rp/ale'
 Plug 'dracula/vim'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
-
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdtree-git-plugin'
 Plug 'scrooloose/nerdcommenter'
-
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
-Plug 'zchee/deoplete-go', { 'do': 'make'}
-
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
-Plug 'SirVer/ultisnips'
-Plug 'tpope/vim-dispatch'
-
-Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer update'}
-
-Plug 'neomake/neomake'
 Plug 'tpope/vim-surround'
 Plug 'jiangmiao/auto-pairs'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'SirVer/ultisnips'
+Plug 'tpope/vim-dispatch'
+
+" Language plugins
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+Plug 'zchee/deoplete-go', { 'do': 'make'}
+Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
+Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer update'}
 
 call plug#end()
 
@@ -76,6 +74,7 @@ set softtabstop=2
 " 100 chars
 "set textwidth=100
 "set colorcolumn=+1
+set noshowmode
 
 " Folding
 set foldmethod=indent
@@ -111,6 +110,7 @@ augroup vimrcEx
 
   " Set syntax highlighting for specific file types
   autocmd BufRead,BufNewFile *.md set filetype=markdown
+  autocmd BufRead,BufNewFile *.ejs set filetype=html
   autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
   autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=8 softtabstop=8 shiftwidth=8
   autocmd BufNewFile,BufRead *.php setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=4
@@ -144,11 +144,20 @@ if executable('ag')
 endif
 
 " Airline
-let g:airline_theme='base16_ocean'
-let g:airline_powerline_fonts=1
-let g:airline#extensions#tabline#enabled=1
-let g:airline#extensions#tabline#left_sep=' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
+" let g:airline_theme='base16_ocean'
+" let g:airline_powerline_fonts=1
+" let g:airline#extensions#tabline#enabled=1
+" let g:airline#extensions#tabline#left_sep=' '
+" let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:lightline = {
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'fugitive#head'
+      \ },
+      \ }
 
 let mapleader=' '
 nnoremap <Left> :echoe "Use h"<cr>
@@ -171,12 +180,13 @@ nnoremap [W :lfirst<cr>
 nnoremap ]W :llast<cr>
 nnoremap <Leader>lc :lclose<cr>
 
+" Key map for quick substitute a word...
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
+" ...with confirmation
+nnoremap <Leader>sc :%s/\<<C-r><C-w>\>//gc<Left><Left><Left>
+
 " write read-only file
 cmap w!! w !sudo tee % >/dev/null
-
-" indent visual selected code without unselecting and going back to normal mode
-vmap <tab> >gv
-vmap <s-tab> <gv
 
 " Git
 map <silent> gs :Gstatus<cr>
@@ -184,9 +194,10 @@ map <silent> gd :Gdiff<cr>
 map <silent> gb :Gblame<cr>
 
 " NERDTree
-map <Leader>n :NERDTreeToggle<cr>
-let g:NERDTreeMapOpenSplit="x"
-let g:NERDTreeMapOpenVSplit="v"
+let NERDTreeShowHidden = 1
+let g:NERDTreeMapOpenSplit = "x"
+let g:NERDTreeMapOpenVSplit = "v"
+map <Leader>d :NERDTreeToggle<cr>
 
 " nerdcommenter
 let g:NERDSpaceDelims = 1
@@ -196,9 +207,9 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhiteSpace = 1
 
 " fzf.vim
-let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git --ignore node_modules --ignore vendor -g ""'
 let g:fzf_layout = { 'down': '~25%' }
-let g:fzf_tags_command = 'ctags -R --exclude=.git --exclude=node_modules'
+let g:fzf_tags_command = 'ctags -R --exclude=.git --exclude=node_modules --exclude=vendor'
 nnoremap <Leader>pf :Files<cr>
 nnoremap <Leader>pb :Buffers<cr>
 nnoremap <Leader>pt :Tags<cr>
@@ -228,6 +239,11 @@ let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigner="<c-f>"
 let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 
+" fix command typo
+command! -bang -nargs=? -complete=file W w<bang> <args>
+command! -bang -nargs=? -complete=file Wq wq<bang> <args>
+command! -bang -nargs=? -complete=file WQ wq<bang> <args>
+
 function! g:AutoCompleteOrSnippetsOrReturnTab()
  if pumvisible()
    return "\<c-n>"
@@ -247,13 +263,40 @@ inoremap <expr><cr> pumvisible() ? deoplete#mappings#close_popup() : "\<cr>"
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
 
 " neomake
-autocmd! BufWritePost * Neomake
+" autocmd! BufWritePost * Neomake
 " eslint
-let s:eslint_path = system('PATH=$(npm bin):$PATH && which eslint')
-let g:neomake_javascript_eslint_exe = substitute(s:eslint_path, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
-let g:neomake_javascript_enabled_makers = ['eslint']
-let g:neomake_open_list = 2
-let g:neomake_list_height = 3
+" let s:eslint_path = system('PATH=$(npm bin):$PATH && which eslint')
+" let g:neomake_javascript_eslint_exe = substitute(s:eslint_path, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
+" let g:neomake_javascript_enabled_makers = ['eslint']
+" let g:neomake_html_enabled_makers = []
+" let g:neomake_open_list = 2
+" let g:neomake_list_height = 3
+let g:ale_open_list = 1
+let g:ale_list_window_size = 3
+let g:ale_sign_error = '⤫'
+let g:ale_sign_warning = '⚠'
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] [%severity%] %s'
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\   'go': ['gometalinter'],
+\}
+let g:ale_go_gometalinter_options = '--disable-all'
+\ . ' --enable=vet'
+\ . ' --enable=golint'
+\ . ' --enable=errcheck'
+" \ . ' --enable=ineffassign'
+" \ . ' --enable=goconst'
+" \ . ' --enable=goimports'
+" \ . ' --enable=lll --line-length=120'
+" These are slow (>2s)
+" \ . ' --enable=varcheck'
+" \ . ' --enable=interfacer'
+" \ . ' --enable=unconvert'
+" \ . ' --enable=structcheck'
+" \ . ' --enable=megacheck'
 
 " vim-tmux-navigator
 if has('nvim')
@@ -266,7 +309,7 @@ endif
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
 let g:go_auto_type_info = 1
-let g:go_metalinter_autosave = 1
+let g:go_metalinter_autosave = 0
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_fields = 1
