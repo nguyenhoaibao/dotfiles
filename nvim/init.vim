@@ -185,6 +185,11 @@ nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 " ...with confirmation
 nnoremap <Leader>sc :%s/\<<C-r><C-w>\>//gc<Left><Left><Left>
 
+" auto fix some command typo
+command! -bang -nargs=? -complete=file W w<bang> <args>
+command! -bang -nargs=? -complete=file Wq wq<bang> <args>
+command! -bang -nargs=? -complete=file WQ wq<bang> <args>
+
 " write read-only file
 cmap w!! w !sudo tee % >/dev/null
 
@@ -238,11 +243,6 @@ let g:deoplete#ignore_sources.php = ['omni']
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigner="<c-f>"
 let g:UltiSnipsJumpBackwardTrigger="<c-b>"
-
-" fix command typo
-command! -bang -nargs=? -complete=file W w<bang> <args>
-command! -bang -nargs=? -complete=file Wq wq<bang> <args>
-command! -bang -nargs=? -complete=file WQ wq<bang> <args>
 
 function! g:AutoCompleteOrSnippetsOrReturnTab()
  if pumvisible()
