@@ -6,9 +6,6 @@ endif
 call plug#begin('~/.config/nvim/bundle')
 
 " General plugins
-" Plug 'neomake/neomake'
-" Plug 'vim-airline/vim-airline'
-" Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 Plug 'dracula/vim'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -193,11 +190,6 @@ command! -bang -nargs=? -complete=file WQ wq<bang> <args>
 " write read-only file
 cmap w!! w !sudo tee % >/dev/null
 
-" Git
-map <silent> gs :Gstatus<cr>
-map <silent> gd :Gdiff<cr>
-map <silent> gb :Gblame<cr>
-
 " NERDTree
 let NERDTreeShowHidden = 1
 let g:NERDTreeMapOpenSplit = "x"
@@ -225,11 +217,13 @@ let g:deoplete#enable_at_startup=1
 if exists('g:plugs["tern_for_vim"]')
   let g:deoplete#omni#functions = {}
   let g:deoplete#omni#functions.javascript = [ 'tern#Complete' ]
+  let g:tern_request_timeout=1
+  let g:tern#command = ['tern']
+  let g:tern#arguments = ['--persistent']
 endif
 " deoplete-ternjs
-let g:tern_request_timeout=1
-let g:tern#command = ['tern']
-let g:tern#arguments = ['--persistent']
+let g:deoplete#sources#ternjs#types = 1
+let g:deoplete#sources#ternjs#docs = 1
 " deplete-go
 let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
 let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
