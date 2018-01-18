@@ -30,7 +30,6 @@ Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
-Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer update'}
 
 call plug#end()
 
@@ -110,15 +109,7 @@ augroup vimrcEx
   autocmd BufRead,BufNewFile *.ejs set filetype=html
   autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
   autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=8 softtabstop=8 shiftwidth=8
-  autocmd BufNewFile,BufRead *.php setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=4
   autocmd BufEnter * EnableStripWhitespaceOnSave
-augroup END
-
-" omnifuncs
-augroup omnifuncs
-  autocmd!
-
-  autocmd FileType php setlocal omnifunc=phpcd#CompletePHP
 augroup END
 
 " js folding
@@ -140,12 +131,7 @@ if executable('ag')
   endif
 endif
 
-" Airline
-" let g:airline_theme='base16_ocean'
-" let g:airline_powerline_fonts=1
-" let g:airline#extensions#tabline#enabled=1
-" let g:airline#extensions#tabline#left_sep=' '
-" let g:airline#extensions#tabline#left_alt_sep = '|'
+" lightline
 let g:lightline = {
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
@@ -156,6 +142,7 @@ let g:lightline = {
       \ },
       \ }
 
+" custom key maps
 let mapleader=' '
 nnoremap <Left> :echoe "Use h"<cr>
 nnoremap <Right> :echoe "Use l"<cr>
@@ -229,9 +216,6 @@ let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
 let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
 let g:deoplete#sources#go#use_cache = 0
 let g:deoplete#sources#go#json_directory = ''
-" deoplete-php
-let g:deoplete#ignore_sources = get(g:, 'deoplete#ignore_sources', {})
-let g:deoplete#ignore_sources.php = ['omni']
 
 " ultisnips
 let g:UltiSnipsExpandTrigger="<c-j>"
@@ -256,15 +240,7 @@ inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr><cr> pumvisible() ? deoplete#mappings#close_popup() : "\<cr>"
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
 
-" neomake
-" autocmd! BufWritePost * Neomake
-" eslint
-" let s:eslint_path = system('PATH=$(npm bin):$PATH && which eslint')
-" let g:neomake_javascript_eslint_exe = substitute(s:eslint_path, '^\n*\s*\(.\{-}\)\n*\s*$', '\1', '')
-" let g:neomake_javascript_enabled_makers = ['eslint']
-" let g:neomake_html_enabled_makers = []
-" let g:neomake_open_list = 2
-" let g:neomake_list_height = 3
+" ALE
 let g:ale_open_list = 1
 let g:ale_list_window_size = 3
 let g:ale_sign_error = '⤫'
@@ -299,7 +275,7 @@ else
   namp <C-h> <C-w>h
 endif
 
-" Golang Configuration
+" vim-go
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
 let g:go_auto_type_info = 1
