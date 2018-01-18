@@ -94,14 +94,14 @@ if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
     if [[ -f ~/.vimrc ]]; then
         mv ~/.vimrc ~/.vimrc.$(date +%s)
     fi
-    if [[ -f ~/.ctags ]]; then
-        mv ~/.ctags ~/.ctags.$(date +%s)
-    fi
+    # if [[ -f ~/.ctags ]]; then
+    #     mv ~/.ctags ~/.ctags.$(date +%s)
+    # fi
 
     echo "Copying dotfiles"
     cp zshrc ~/.zshrc
     cp tmux.macos.conf ~/.tmux.conf
-    cp ctags ~/.ctags
+    # cp ctags ~/.ctags
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi
