@@ -6,7 +6,7 @@ if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     brew update
 
     brew install zsh
-    brew install zsh-syntax-highlighting
+    brew install zsh-autosuggestions
     brew install reattach-to-user-namespace
     brew install tmux
     brew install the_silver_searcher
@@ -46,39 +46,6 @@ if [[ $go == "y" ]] || [[ $go == "Y" ]] ; then
     rm -f $goname
 fi
 
-echo -n "Install PHP? (y/N) => "; read php
-if [[ $php == "y" ]] || [[ $php == "Y" ]] ; then
-    xcode=$(xcode-select -p)
-    if [[ -z "$xcode" ]] ; then
-        echo "Please install Xcode Command Line tools by xcode-select --install. Then run this script again."
-        exit 1
-    fi
-    brew install automake autoconf curl pcre bison re2c mhash libtool icu4c gettext jpeg openssl libxml2 mcrypt gmp libevent
-    brew link icu4c
-    brew link --force openssl
-    brew link --force libxml2
-
-    curl -L -O https://github.com/phpbrew/phpbrew/raw/master/phpbrew
-    chmod +x phpbrew
-
-    sudo mv phpbrew /usr/local/bin/phpbrew
-    phpbrew init
-    . ~/.phpbrew/bashrc
-    # Must add openssl variant explicity, see https://github.com/phpbrew/phpbrew/issues/612#issuecomment-271051499
-    phpbrew install 7.1 +default +fpm +openssl
-    phpbrew ext install mongo
-    phpbrew ext enable mongo
-
-    installed=$(phpbrew list | grep php | xargs)
-    phpbrew switch $installed
-
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    php -r "if (hash_file('SHA384', 'composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-    php composer-setup.php
-    php -r "unlink('composer-setup.php');"
-    sudo mv composer.phar /usr/local/bin/composer
-fi
-
 echo -n "Copy dotfiles to local? (y/N) => "; read co
 if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
     echo "Backing up old dotfiles"
@@ -94,14 +61,10 @@ if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
     if [[ -f ~/.vimrc ]]; then
         mv ~/.vimrc ~/.vimrc.$(date +%s)
     fi
-    # if [[ -f ~/.ctags ]]; then
-    #     mv ~/.ctags ~/.ctags.$(date +%s)
-    # fi
 
     echo "Copying dotfiles"
     cp zshrc ~/.zshrc
     cp tmux.macos.conf ~/.tmux.conf
-    # cp ctags ~/.ctags
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi
