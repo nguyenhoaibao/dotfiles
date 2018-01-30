@@ -30,6 +30,7 @@ Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+Plug 'tomlion/vim-solidity'
 
 call plug#end()
 
@@ -120,15 +121,22 @@ augroup jsFolds
   autocmd FileType javascript set foldmethod=syntax
 augroup end
 
-" Ag
-if executable('ag')
-  " Use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  if !exists(":Ag")
-    command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-    nnoremap \ :Ag<SPACE>
-  endif
+" ripgrep
+if executable('rg')
+  command! -bang -nargs=* Rg
+    \ call fzf#vim#grep(
+    \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+    \   <bang>0 ? fzf#vim#with_preview('up:60%')
+    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+    \   <bang>0)
+  nnoremap \ :Rg<SPACE>
+elseif executable('ag')
+  command! -bang -nargs=* Ag
+    \ call fzf#vim#ag(<q-args>,
+    \   <bang>0 ? fzf#vim#with_preview('up:60%')
+    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+    \   <bang>0)
+  nnoremap \ :Ag<SPACE>
 endif
 
 " lightline
@@ -191,7 +199,11 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhiteSpace = 1
 
 " fzf.vim
-let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git --ignore node_modules --ignore vendor -g ""'
+if executable('rg')
+  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*" --glob "!node_modules/*" --glob "!vendor/*"'
+elseif executable('ag')
+  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git --ignore node_modules --ignore vendor -g ""'
+endif
 let g:fzf_layout = { 'down': '~25%' }
 let g:fzf_tags_command = 'ctags -R --exclude=.git --exclude=node_modules --exclude=vendor'
 nnoremap <Leader>pf :Files<cr>
