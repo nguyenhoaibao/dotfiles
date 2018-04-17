@@ -7,7 +7,6 @@ call plug#begin('~/.config/nvim/bundle')
 
 " General plugins
 Plug 'w0rp/ale'
-Plug 'dracula/vim'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'itchyny/lightline.vim'
 Plug 'tpope/vim-fugitive'
@@ -24,6 +23,10 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-dispatch'
+
+" colorscheme
+Plug 'dracula/vim'
+Plug 'arcticicestudio/nord-vim' " should be used with nord-tmux & nord-iterm2
 
 " Language plugins
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
@@ -92,7 +95,7 @@ endif
 " Colors
 set t_Co=256
 set termguicolors
-colorscheme dracula
+colorscheme nord
 
 augroup vimrcEx
   autocmd!
@@ -121,26 +124,13 @@ augroup jsFolds
   autocmd FileType javascript set foldmethod=syntax
 augroup end
 
-" ripgrep
-if executable('rg')
-  command! -bang -nargs=* Rg
-    \ call fzf#vim#grep(
-    \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-    \   <bang>0 ? fzf#vim#with_preview('up:60%')
-    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-    \   <bang>0)
-  nnoremap \ :Rg<SPACE>
-elseif executable('ag')
-  command! -bang -nargs=* Ag
-    \ call fzf#vim#ag(<q-args>,
-    \   <bang>0 ? fzf#vim#with_preview('up:60%')
-    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-    \   <bang>0)
-  nnoremap \ :Ag<SPACE>
-endif
+" nord-vim
+let g:nord_italic = 1
+let g:nord_uniform_diff_background = 1
 
 " lightline
 let g:lightline = {
+      \ 'colorscheme': 'nord',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
@@ -199,13 +189,26 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhiteSpace = 1
 
 " fzf.vim
-if executable('rg')
-  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*" --glob "!node_modules/*" --glob "!vendor/*"'
-elseif executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git --ignore node_modules --ignore vendor -g ""'
-endif
 let g:fzf_layout = { 'down': '~25%' }
 let g:fzf_tags_command = 'ctags -R --exclude=.git --exclude=node_modules --exclude=vendor'
+if executable('rg')
+  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*" --glob "!node_modules/*" --glob "!vendor/*"'
+  command! -bang -nargs=* Rg
+    \ call fzf#vim#grep(
+    \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+    \   <bang>0 ? fzf#vim#with_preview('up:60%')
+    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+    \   <bang>0)
+  nnoremap \ :Rg<SPACE>
+elseif executable('ag')
+  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git --ignore node_modules --ignore vendor -g ""'
+  command! -bang -nargs=* Ag
+    \ call fzf#vim#ag(<q-args>,
+    \   <bang>0 ? fzf#vim#with_preview('up:60%')
+    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+    \   <bang>0)
+  nnoremap \ :Ag<SPACE>
+endif
 nnoremap <Leader>pf :Files<cr>
 nnoremap <Leader>pb :Buffers<cr>
 nnoremap <Leader>pt :Tags<cr>
