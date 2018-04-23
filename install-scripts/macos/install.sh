@@ -5,15 +5,12 @@ if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     brew update
 
-    brew install zsh
-    brew install zsh-autosuggestions
-    brew install reattach-to-user-namespace
-    brew install tmux
-    brew install the_silver_searcher
-    brew install ctags
-    brew install wget curl
-    brew tap caskroom/cask
+    brew install zsh zsh-autosuggestions
+    brew install tmux reattach-to-user-namespace
+    brew install wget curl the_silver_searcher
+    brew tap caskroom/cask universal-ctags/universal-ctags
     brew cask install iterm2
+    brew install --HEAD universal-ctags
     sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
 
@@ -35,7 +32,7 @@ fi
 
 echo -n "Install Go? (y/N) => "; read go
 if [[ $go == "y" ]] || [[ $go == "Y" ]] ; then
-    goversion="1.8.1"
+    goversion="1.10.1"
     goos="darwin"
     goarch="amd64"
     goname="go$goversion.$goos-$goarch.tar.gz"
@@ -44,6 +41,9 @@ if [[ $go == "y" ]] || [[ $go == "Y" ]] ; then
     wget $godl
     sudo tar -C /usr/local -xvzf $goname
     rm -f $goname
+
+    # install gotags
+    brew install gotags
 fi
 
 echo -n "Copy dotfiles to local? (y/N) => "; read co

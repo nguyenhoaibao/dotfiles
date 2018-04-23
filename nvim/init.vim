@@ -23,10 +23,11 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-dispatch'
+Plug 'majutsushi/tagbar'
 
 " colorscheme
 Plug 'dracula/vim'
-Plug 'arcticicestudio/nord-vim' " should be used with nord-tmux & nord-iterm2
+Plug 'arcticicestudio/nord-vim' " should be used with nord-iterm2
 
 " Language plugins
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
@@ -289,6 +290,36 @@ if has('nvim')
 else
   namp <C-h> <C-w>h
 endif
+
+" tagbar
+nmap <Leader>f :TagbarToggle<CR>
+let g:tagbar_type_go = {
+	\ 'ctagstype' : 'go',
+	\ 'kinds'     : [
+		\ 'p:package',
+		\ 'i:imports:1',
+		\ 'c:constants',
+		\ 'v:variables',
+		\ 't:types',
+		\ 'n:interfaces',
+		\ 'w:fields',
+		\ 'e:embedded',
+		\ 'm:methods',
+		\ 'r:constructor',
+		\ 'f:functions'
+	\ ],
+	\ 'sro' : '.',
+	\ 'kind2scope' : {
+		\ 't' : 'ctype',
+		\ 'n' : 'ntype'
+	\ },
+	\ 'scope2kind' : {
+		\ 'ctype' : 't',
+		\ 'ntype' : 'n'
+	\ },
+	\ 'ctagsbin'  : 'gotags',
+	\ 'ctagsargs' : '-sort -silent'
+\ }
 
 " vim-go
 let g:go_fmt_command = "goimports"
