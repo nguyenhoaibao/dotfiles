@@ -8,7 +8,8 @@ if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     brew install zsh zsh-autosuggestions
     brew install tmux reattach-to-user-namespace
     brew install wget curl the_silver_searcher
-    brew tap caskroom/cask universal-ctags/universal-ctags
+    brew tap caskroom/cask
+    brew tap universal-ctags/universal-ctags
     brew cask install iterm2
     brew install --HEAD universal-ctags
     sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
