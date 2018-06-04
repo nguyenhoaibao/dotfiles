@@ -25,7 +25,7 @@ fi
 
 echo -n "Install neovim? (y/N) => "; read nvim
 if [[ $nvim == "y" ]] || [[ $nvim == "Y" ]] ; then
-    brew install neovim/neovim/neovim
+    brew install neovim
     brew install python3
     pip2 install neovim
     pip3 install neovim
