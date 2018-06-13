@@ -6,7 +6,7 @@ if [[ $base != "n" ]] && [[ $base != "N" ]] ; then
     brew update
 
     brew install zsh zsh-autosuggestions
-    brew install tmux reattach-to-user-namespace
+    brew install tmux reattach-to-user-namespace gawk
     brew install wget curl the_silver_searcher
     brew tap caskroom/cask
     brew tap universal-ctags/universal-ctags
