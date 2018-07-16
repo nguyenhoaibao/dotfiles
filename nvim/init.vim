@@ -143,10 +143,6 @@ let g:lightline = {
 
 " custom key maps
 let mapleader=' '
-nnoremap <Left> :echoe "Use h"<cr>
-nnoremap <Right> :echoe "Use l"<cr>
-nnoremap <Up> :echoe "Use k"<cr>
-nnoremap <Down> :echoe "Use j"<cr>
 nnoremap <Leader>w :w<cr>
 nnoremap <Leader>nh :noh<cr><c-l>
 nnoremap <Leader><tab> :b#<cr>
@@ -265,6 +261,7 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] [%severity%] %s'
+let g:ale_linters_explicit = 1
 let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'go': ['gometalinter'],
