@@ -9,6 +9,7 @@ call plug#begin('~/.config/nvim/bundle')
 Plug 'w0rp/ale'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'itchyny/lightline.vim'
+Plug 'mgee/lightline-bufferline'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
@@ -130,11 +131,24 @@ let g:nord_italic = 1
 let g:nord_uniform_diff_background = 1
 
 " lightline
+set showtabline=2
+let g:lightline#bufferline#unnamed = '[No Name]'
+let g:lightline#bufferline#show_number  = 1
 let g:lightline = {
+      \ 'tabline': {
+      \   'left': [['buffers']],
+      \   'right': [[ 'close' ]]
+      \ },
       \ 'colorscheme': 'nord',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_expand': {
+      \   'buffers': 'lightline#bufferline#buffers',
+      \ },
+      \ 'component_type': {
+      \   'buffers': 'tabsel',
       \ },
       \ 'component_function': {
       \   'gitbranch': 'fugitive#head'
