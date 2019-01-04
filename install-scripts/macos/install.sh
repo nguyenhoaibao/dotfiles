@@ -5,7 +5,7 @@ brew update
 
 brew install zsh zsh-autosuggestions
 brew install tmux reattach-to-user-namespace gawk
-brew install wget curl the_silver_searcher
+brew install wget curl the_silver_searcher direnv
 brew tap caskroom/cask
 brew tap universal-ctags/universal-ctags
 brew cask install iterm2

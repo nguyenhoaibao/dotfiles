@@ -32,6 +32,7 @@ Plug 'arcticicestudio/nord-vim' " should be used with nord-iterm2
 
 " Language plugins
 Plug 'fatih/vim-go', { 'tag': 'v1.18', 'do': ':GoInstallBinaries' }
+Plug 'rust-lang/rust.vim'
 Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
@@ -113,7 +114,8 @@ augroup vimrcEx
   " Set syntax highlighting for specific file types
   autocmd BufRead,BufNewFile *.md set filetype=markdown
   autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
-  autocmd BufNewFile,BufRead *.{python,js} setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=4
+  autocmd BufNewFile,BufRead *.{js} setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
+  autocmd BufNewFile,BufRead *.{python} setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=4
   autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=8 softtabstop=8 shiftwidth=8
   autocmd BufNewFile,BufRead *.proto setlocal noexpandtab tabstop=8 softtabstop=8 shiftwidth=8
   autocmd BufEnter * EnableStripWhitespaceOnSave
@@ -218,6 +220,8 @@ elseif executable('ag')
     \   <bang>0 ? fzf#vim#with_preview('up:60%')
     \           : fzf#vim#with_preview('right:50%:hidden', '?'),
     \   <bang>0)
+  command! -bang -nargs=+ -complete=dir Rag
+    \ call fzf#vim#ag_raw(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
   nnoremap \ :Ag<SPACE>
 endif
 nnoremap <Leader>pf :Files<cr>
@@ -275,16 +279,18 @@ let g:ale_echo_msg_format = '[%linter%] [%severity%] %s'
 let g:ale_linters_explicit = 1
 let g:ale_fix_on_save = 1
 let g:ale_linters = {
-\   'javascript': ['eslint'],
+\   'javascript': ['prettier'],
 \   'go': ['golangci-lint'],
 \}
 let g:ale_fixers = {
-\   'javascript': ['prettier', 'eslint']
+\   'javascript': ['prettier_standard']
 \}
-let g:ale_go_golangci_lint_options = '-j 4 --disable-all'
+let g:ale_go_golangci_lint_package = 1
+let g:ale_go_golangci_lint_options = '--disable-all'
 \ . ' --enable=govet'
 \ . ' --enable=golint'
 \ . ' --enable=errcheck'
+\ . ' --enable=typecheck'
 \ . ' --enable=ineffassign'
 \ . ' --enable=misspell'
 \ . ' --enable=deadcode'
