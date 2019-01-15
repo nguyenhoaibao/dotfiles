@@ -31,7 +31,7 @@ Plug 'dracula/vim'
 Plug 'arcticicestudio/nord-vim' " should be used with nord-iterm2
 
 " Language plugins
-Plug 'fatih/vim-go', { 'tag': 'v1.18', 'do': ':GoInstallBinaries' }
+Plug 'fatih/vim-go', { 'tag': 'v1.19' }
 Plug 'rust-lang/rust.vim'
 Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
@@ -351,6 +351,7 @@ let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
 let g:go_auto_type_info = 1
 set updatetime=1500
+let g:go_def_mode='godef'
 let g:go_metalinter_autosave = 0
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
@@ -359,6 +360,10 @@ let g:go_highlight_structs = 1
 let g:go_highlight_interfaces = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
+let g:go_debug_windows = {
+  \ 'out':   'botright 10new',
+  \ 'vars':  'leftabove 80vnew',
+\ }
 autocmd FileType go nmap <leader>r <Plug>(go-run)
 autocmd FileType go nmap <leader>b <Plug>(go-build)
 autocmd FileType go nmap <leader>t <Plug>(go-test)
