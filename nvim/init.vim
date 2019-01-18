@@ -244,7 +244,7 @@ let g:deoplete#sources#ternjs#docs = 1
 " deplete-go
 let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
 let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
-" let g:deoplete#sources#go#pointer = 1
+let g:deoplete#sources#go#unimported_packages = 1
 
 " ultisnips
 let g:UltiSnipsExpandTrigger="<c-j>"
@@ -350,7 +350,6 @@ let g:tagbar_type_go = {
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
 let g:go_auto_type_info = 1
-set updatetime=1500
 let g:go_def_mode='godef'
 let g:go_metalinter_autosave = 0
 let g:go_highlight_functions = 1
