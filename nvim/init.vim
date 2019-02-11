@@ -10,7 +10,7 @@ Plug 'w0rp/ale'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'itchyny/lightline.vim'
 Plug 'mgee/lightline-bufferline'
-Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive', { 'tag': 'v2.5' }
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdtree-git-plugin'
@@ -115,7 +115,7 @@ augroup vimrcEx
   autocmd BufRead,BufNewFile *.md set filetype=markdown
   autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
   autocmd BufNewFile,BufRead *.{js} setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
-  autocmd BufNewFile,BufRead *.{python} setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=4
+  autocmd BufNewFile,BufRead *.{python,sh} setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=4
   autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=8 softtabstop=8 shiftwidth=8
   autocmd BufNewFile,BufRead *.proto setlocal noexpandtab tabstop=8 softtabstop=8 shiftwidth=8
   autocmd BufEnter * EnableStripWhitespaceOnSave
@@ -128,6 +128,11 @@ augroup jsFolds
   autocmd FileType javascript syntax region foldBraces start=/{/ end=/}/ transparent fold keepend extend
   autocmd FileType javascript set foldmethod=syntax
 augroup end
+
+" Triger `autoread` when files changes on disk
+" https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
+autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
+autocmd FileChangedShellPost * echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
 
 " nord-vim
 let g:nord_italic = 1
@@ -174,6 +179,18 @@ nnoremap ]w :lnext<cr>
 nnoremap [W :lfirst<cr>
 nnoremap ]W :llast<cr>
 nnoremap <Leader>lc :lclose<cr>
+
+" fugitive git bindings
+nnoremap <Leader>gs :Gstatus<cr>
+nnoremap <Leader>gc :Gcommit -v -q<cr>
+nnoremap <Leader>gt :Gcommit -v -q %:p<cr>
+nnoremap <Leader>gr :Gread<cr>
+nnoremap <Leader>gw :Gwrite<cr><cr>
+nnoremap <Leader>gl :silent! Glog<CR>:bot copen<CR>
+nnoremap <Leader>gb :Git branch<Space>
+nnoremap <Leader>go :Git checkout<Space>
+nnoremap <Leader>gp :Gpush<Space>
+nnoremap <Leader>gl :Gpull<Space>
 
 " Key map for quick substitute a word...
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
@@ -350,7 +367,7 @@ let g:tagbar_type_go = {
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
 let g:go_auto_type_info = 1
-let g:go_def_mode='godef'
+" let g:go_def_mode='godef'
 let g:go_metalinter_autosave = 0
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
