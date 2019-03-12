@@ -6,11 +6,12 @@ endif
 call plug#begin('~/.config/nvim/bundle')
 
 " General plugins
-Plug 'w0rp/ale'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'w0rp/ale', { 'tag': '*' }
+Plug 'Shougo/deoplete.nvim', { 'tag': '*', 'do': ':UpdateRemotePlugins' }
 Plug 'itchyny/lightline.vim'
 Plug 'mgee/lightline-bufferline'
-Plug 'tpope/vim-fugitive', { 'tag': 'v2.5' }
+Plug 'maximbaz/lightline-ale'
+Plug 'tpope/vim-fugitive', { 'tag': '*' }
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdtree-git-plugin'
@@ -31,9 +32,9 @@ Plug 'dracula/vim'
 Plug 'arcticicestudio/nord-vim' " should be used with nord-iterm2
 
 " Language plugins
-Plug 'fatih/vim-go', { 'tag': 'v1.19' }
+Plug 'fatih/vim-go', { 'tag': '*' }
 Plug 'rust-lang/rust.vim'
-Plug 'zchee/deoplete-go', { 'do': 'make'}
+Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'tomlion/vim-solidity'
@@ -44,6 +45,7 @@ call plug#end()
 syntax on
 set number
 set relativenumber
+set lazyredraw
 set numberwidth=5
 set ruler
 set autoindent
@@ -143,19 +145,31 @@ set showtabline=2
 let g:lightline#bufferline#unnamed = '[No Name]'
 let g:lightline = {
       \ 'tabline': {
-      \   'left': [['buffers']],
+      \   'left': [[ 'buffers' ]],
       \   'right': [[ 'close' ]]
       \ },
       \ 'colorscheme': 'nord',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ],
+      \   'right': [ [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
+      \             [ 'line-info' ],
+      \             [ 'percent' ],
+      \             [ 'fileformat', 'fileencoding', 'filetype' ] ]
       \ },
       \ 'component_expand': {
       \   'buffers': 'lightline#bufferline#buffers',
+      \   'linter_checking': 'lightline#ale#checking',
+      \   'linter_warnings': 'lightline#ale#warnings',
+      \   'linter_errors': 'lightline#ale#errors',
+      \   'linter_ok': 'lightline#ale#ok'
       \ },
       \ 'component_type': {
       \   'buffers': 'tabsel',
+      \   'linter_checking': 'left',
+      \   'linter_warnings': 'warning',
+      \   'linter_errors': 'error',
+      \   'linter_ok': 'left'
       \ },
       \ 'component_function': {
       \   'gitbranch': 'fugitive#head'
@@ -179,8 +193,11 @@ nnoremap ]w :lnext<cr>
 nnoremap [W :lfirst<cr>
 nnoremap ]W :llast<cr>
 nnoremap <Leader>lc :lclose<cr>
+nnoremap g2 :diffg //2<cr>
+nnoremap g3 :diffg //3<cr>
 
 " fugitive git bindings
+let g:fugitive_force_bang_command = 1
 nnoremap <Leader>gs :Gstatus<cr>
 nnoremap <Leader>gc :Gcommit -v -q<cr>
 nnoremap <Leader>gt :Gcommit -v -q %:p<cr>
@@ -190,7 +207,8 @@ nnoremap <Leader>gl :silent! Glog<CR>:bot copen<CR>
 nnoremap <Leader>gb :Git branch<Space>
 nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gp :Gpush<Space>
-nnoremap <Leader>gl :Gpull<Space>
+nnoremap <Leader>gpl :Gpull<Space>
+nnoremap <Leader>gvd :Gvdiff<cr>
 
 " Key map for quick substitute a word...
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
@@ -258,15 +276,16 @@ endif
 " deoplete-ternjs
 let g:deoplete#sources#ternjs#types = 1
 let g:deoplete#sources#ternjs#docs = 1
-" deplete-go
+" deoplete-go
 let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
 let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+let g:deoplete#sources#go#builtin_objects = 1
 let g:deoplete#sources#go#unimported_packages = 1
 
 " ultisnips
 let g:UltiSnipsExpandTrigger="<c-j>"
-let g:UltiSnipsJumpForwardTrigner="<c-f>"
-let g:UltiSnipsJumpBackwardTrigger="<c-b>"
+let g:UltiSnipsJumpForwardTrigner="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 function! g:AutoCompleteOrSnippetsOrReturnTab()
  if pumvisible()
@@ -287,6 +306,8 @@ inoremap <expr><cr> pumvisible() ? deoplete#mappings#close_popup() : "\<cr>"
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
 
 " ALE
+nnoremap <Leader>aj :ALENextWrap<cr>
+nnoremap <Leader>ak :ALEPreviousWrap<cr>
 let g:ale_open_list = 1
 let g:ale_list_window_size = 3
 let g:ale_lint_on_text_changed = 'never'
@@ -366,16 +387,16 @@ let g:tagbar_type_go = {
 " vim-go
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
+let g:go_def_mode='godef'
 let g:go_auto_type_info = 1
-" let g:go_def_mode='godef'
 let g:go_metalinter_autosave = 0
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
-let g:go_highlight_fields = 1
+let g:go_highlight_fields = 0
 let g:go_highlight_structs = 1
 let g:go_highlight_interfaces = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_build_constraints = 1
+" let g:go_highlight_operators = 1
+" let g:go_highlight_build_constraints = 1
 let g:go_debug_windows = {
   \ 'out':   'botright 10new',
   \ 'vars':  'leftabove 80vnew',
