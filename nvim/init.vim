@@ -8,6 +8,7 @@ call plug#begin('~/.config/nvim/bundle')
 " General plugins
 Plug 'w0rp/ale', { 'tag': '*' }
 Plug 'Shougo/deoplete.nvim', { 'tag': '*', 'do': ':UpdateRemotePlugins' }
+Plug 'autozimu/LanguageClient-neovim', { 'commit': 'f71ab82', 'do': 'bash install.sh' }
 Plug 'itchyny/lightline.vim'
 Plug 'mgee/lightline-bufferline'
 Plug 'maximbaz/lightline-ale'
@@ -26,6 +27,7 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-dispatch'
 Plug 'majutsushi/tagbar'
+Plug 'Shougo/echodoc.vim'
 
 " colorscheme
 Plug 'dracula/vim'
@@ -34,7 +36,7 @@ Plug 'arcticicestudio/nord-vim' " should be used with nord-iterm2
 " Language plugins
 Plug 'fatih/vim-go', { 'tag': '*' }
 Plug 'rust-lang/rust.vim'
-Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
+" Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'tomlion/vim-solidity'
@@ -68,6 +70,7 @@ set backspace=2
 set clipboard=unnamedplus
 set tags=./tags;,tags;
 filetype plugin indent on
+set completeopt-=preview
 
 " Softtabs
 set expandtab
@@ -196,17 +199,21 @@ nnoremap <Leader>lc :lclose<cr>
 nnoremap g2 :diffg //2<cr>
 nnoremap g3 :diffg //3<cr>
 
+" echodoc
+let g:echodoc_enable_at_startup = 1
+let g:echodoc#type = "echo"
+
 " fugitive git bindings
 let g:fugitive_force_bang_command = 1
 nnoremap <Leader>gs :Gstatus<cr>
-nnoremap <Leader>gc :Gcommit -v -q<cr>
+nnoremap <Leader>gco :Gcommit -v -q<cr>
 nnoremap <Leader>gt :Gcommit -v -q %:p<cr>
 nnoremap <Leader>gr :Gread<cr>
 nnoremap <Leader>gw :Gwrite<cr><cr>
 nnoremap <Leader>gl :silent! Glog<CR>:bot copen<CR>
 nnoremap <Leader>gb :Git branch<Space>
-nnoremap <Leader>go :Git checkout<Space>
-nnoremap <Leader>gp :Gpush<Space>
+nnoremap <Leader>gch :Git checkout<Space>
+nnoremap <Leader>gpp :Gpush<Space>
 nnoremap <Leader>gpl :Gpull<Space>
 nnoremap <Leader>gvd :Gvdiff<cr>
 
@@ -265,6 +272,11 @@ nnoremap <Leader>pt :Tags<cr>
 
 " deoplete
 let g:deoplete#enable_at_startup=1
+" call deoplete#custom#source('omni', 'mark', '')
+call deoplete#custom#source('', ' max_abbr_width', 0)
+call deoplete#custom#source('', 'max_kind_width', 0)
+call deoplete#custom#source('', 'max_info_width', 0)
+call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })
 " tern
 if exists('g:plugs["tern_for_vim"]')
   let g:deoplete#omni#functions = {}
@@ -276,11 +288,6 @@ endif
 " deoplete-ternjs
 let g:deoplete#sources#ternjs#types = 1
 let g:deoplete#sources#ternjs#docs = 1
-" deoplete-go
-let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
-let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
-let g:deoplete#sources#go#builtin_objects = 1
-let g:deoplete#sources#go#unimported_packages = 1
 
 " ultisnips
 let g:UltiSnipsExpandTrigger="<c-j>"
@@ -324,28 +331,7 @@ let g:ale_fixers = {
 \   'javascript': ['prettier_standard']
 \}
 let g:ale_go_golangci_lint_package = 1
-let g:ale_go_golangci_lint_options = '--disable-all'
-\ . ' --enable=govet'
-\ . ' --enable=golint'
-\ . ' --enable=errcheck'
-\ . ' --enable=typecheck'
-\ . ' --enable=ineffassign'
-\ . ' --enable=misspell'
-\ . ' --enable=deadcode'
-" let g:ale_go_gometalinter_options = '--disable-all'
-" \ . ' --enable=vet'
-" \ . ' --enable=golint'
-" \ . ' --enable=errcheck'
-" \ . ' --enable=ineffassign'
-" \ . ' --enable=goconst'
-" \ . ' --enable=goimports'
-" \ . ' --enable=lll --line-length=120'
-" These are slow (>2s)
-" \ . ' --enable=varcheck'
-" \ . ' --enable=interfacer'
-" \ . ' --enable=unconvert'
-" \ . ' --enable=structcheck'
-" \ . ' --enable=megacheck'
+let g:ale_go_golangci_lint_options = '--disable-all --presets=bugs --enable=deadcode --enable=varcheck'
 
 " vim-tmux-navigator
 if has('nvim')
@@ -387,7 +373,8 @@ let g:tagbar_type_go = {
 " vim-go
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
-let g:go_def_mode='godef'
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
 let g:go_auto_type_info = 1
 let g:go_metalinter_autosave = 0
 let g:go_highlight_functions = 1
@@ -401,13 +388,24 @@ let g:go_debug_windows = {
   \ 'out':   'botright 10new',
   \ 'vars':  'leftabove 80vnew',
 \ }
-autocmd FileType go nmap <leader>r <Plug>(go-run)
-autocmd FileType go nmap <leader>b <Plug>(go-build)
-autocmd FileType go nmap <leader>t <Plug>(go-test)
-autocmd FileType go nmap <Leader>c <Plug>(go-coverage-toggle)
-autocmd FileType go nmap <Leader>i <Plug>(go-info)
-autocmd FileType go nmap <Leader>gd <Plug>(go-doc)
+autocmd FileType go nmap <leader>gor <Plug>(go-run)
+autocmd FileType go nmap <leader>gob <Plug>(go-build)
+autocmd FileType go nmap <leader>got <Plug>(go-test)
+autocmd FileType go nmap <Leader>goc <Plug>(go-coverage-toggle)
+autocmd FileType go nmap <Leader>goi <Plug>(go-info)
+autocmd FileType go nmap <Leader>god <Plug>(go-doc)
 autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
 autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit')
 autocmd Filetype go command! -bang AX call go#alternate#Switch(<bang>0, 'split')
 autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
+
+let g:LanguageClient_rootMarkers = {
+  \ 'go': ['.git', 'go.mod'],
+  \ }
+
+let g:LanguageClient_serverCommands = {
+  \ 'go': ['gopls']
+ \ }
+" let g:LanguageClient_loggingFile = expand('~/.config/nvim/LanguageClient.log')
+" let g:LanguageClient_loggingLevel = 'DEBUG'
+let g:LanguageClient_diagnosticsEnable = 0
