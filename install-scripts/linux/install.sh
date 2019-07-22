@@ -1,8 +1,8 @@
 #!/bin/bash
 
 sudo apt-get install -y zsh
-sudo apt-get install -y tmux
-sudo apt-get install -y silversearcher-ag
+sudo apt-get install -y tmux git
+sudo apt-get install -y silversearcher-ag direnv
 sudo apt-get install -y xclip
 sudo apt-get install -y universal-ctags
 
@@ -23,7 +23,7 @@ nvm alias default node
 npm install --global prettier
 
 # install Go
-goversion="1.10.1"
+goversion="1.12.7"
 goos="linux"
 goarch="amd64"
 goname="go$goversion.$goos-$goarch.tar.gz"
@@ -57,5 +57,8 @@ if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi
+
+# install zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"

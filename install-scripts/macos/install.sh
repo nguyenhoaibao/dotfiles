@@ -3,7 +3,7 @@
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew update
 
-brew install zsh zsh-autosuggestions
+brew install zsh
 brew install tmux reattach-to-user-namespace gawk
 brew install wget curl the_silver_searcher direnv
 brew tap caskroom/cask
@@ -25,7 +25,7 @@ nvm alias default node
 npm install --global prettier
 
 # install Go
-goversion="1.10.1"
+goversion="1.12.7"
 goos="darwin"
 goarch="amd64"
 goname="go$goversion.$goos-$goarch.tar.gz"
@@ -39,8 +39,8 @@ brew install gotags
 # install golangci-lint
 go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
 
-echo -n "Copy dotfiles to local? (y/N) => "; read co
-if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
+echo -n "Copy dotfiles to local? (y/N) => "; read cp
+if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
     echo "Backing up old dotfiles"
     if [[ -f ~/.zshrc ]]; then
         mv ~/.zshrc ~/.zshrc.$(date +%s)
@@ -61,6 +61,9 @@ if [[ $co == "y" ]] || [[ $co == "Y" ]] ; then
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi
+
+# install zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
 # install oh-my-zsh
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"

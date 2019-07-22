@@ -203,6 +203,10 @@ nnoremap g3 :diffg //3<cr>
 let g:echodoc_enable_at_startup = 1
 let g:echodoc#type = "echo"
 
+" strip whitespace on save
+let g:strip_whitespace_on_save = 1
+let g:strip_whitespace_confirm = 0
+
 " fugitive git bindings
 let g:fugitive_force_bang_command = 1
 nnoremap <Leader>gs :Gstatus<cr>
@@ -375,7 +379,7 @@ let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
 let g:go_def_mode='gopls'
 let g:go_info_mode='gopls'
-let g:go_auto_type_info = 1
+let g:go_auto_type_info = 0
 let g:go_metalinter_autosave = 0
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
