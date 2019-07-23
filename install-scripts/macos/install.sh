@@ -8,8 +8,10 @@ brew install tmux reattach-to-user-namespace gawk
 brew install wget curl the_silver_searcher direnv
 brew tap caskroom/cask
 brew tap universal-ctags/universal-ctags
-brew cask install iterm2
 brew install --HEAD universal-ctags
+brew cask install alacritty
+brew tap homebrew/cask-fonts
+brew cask install font-fira-code
 
 # install neovim
 brew install neovim
@@ -58,12 +60,16 @@ if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
     echo "Copying dotfiles"
     cp zshrc ~/.zshrc
     cp tmux.macos.conf ~/.tmux.conf
+    cp alacritty.yml ~/.config/alacritty/alacritty.yml
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi
 
+# install oh-my-zsh
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
 # install zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
-# install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+# install tpm
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm

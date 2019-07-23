@@ -1,8 +1,8 @@
 #!/bin/bash
 
+sudo apt-get update
 sudo apt-get install -y zsh
-sudo apt-get install -y tmux git
-sudo apt-get install -y silversearcher-ag direnv
+sudo apt-get install -y tmux git silversearcher-ag direnv alacritty fonts-firacode wget
 sudo apt-get install -y xclip
 sudo apt-get install -y universal-ctags
 
@@ -32,8 +32,22 @@ godl="https://storage.googleapis.com/golang/$goname"
 wget $godl
 sudo tar -C /usr/local -xvzf $goname
 rm -f $goname
-# install golangci-lint
-go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
+
+# install Docker
+# See: https://docs.docker.com/install/linux/docker-ce/ubuntu/
+sudo apt-get remove docker docker-engine docker.io containerd runc
+DOCKER_DOWNLOAD_URL=https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64
+
+urls=(
+    "$DOCKER_DOWNLOAD_URL/docker-ce_19.03.0~3-0~ubuntu-bionic_amd64.deb"
+    "$DOCKER_DOWNLOAD_URL/docker-ce-cli_19.03.0~3-0~ubuntu-bionic_amd64.deb"
+    "$DOCKER_DOWNLOAD_URL/containerd.io_1.2.6-3_amd64.deb"
+)
+
+for url in "${urls[@]}"
+do
+    TMP_DEB="$(mktemp)" && wget -O "$TMP_DEB" "$url" && sudo dpkg -i "$TMP_DEB" && rm -f "$TMP_DEB"
+done
 
 echo -n "Copy dotfiles to local? (y/N) => "; read cp
 if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
@@ -54,11 +68,16 @@ if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
     echo "Copying dotfiles"
     cp zshrc ~/.zshrc
     cp tmux.linux.conf ~/.tmux.conf
+    cp alacritty.yml ~/.config/alacritty/alacritty.yml
     mkdir -p ~/.config
     cp -R nvim ~/.config
 fi
 
+# install oh-my-zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
 # install zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+# install tpm
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
