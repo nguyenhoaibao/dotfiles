@@ -24,7 +24,7 @@ sh -c "$(curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/insta
 . $HOME/.nvm/nvm.sh
 nvm install stable
 nvm alias default node
-npm install --global prettier
+npm install --global prettier neovim
 
 # install Go
 goversion="1.12.7"
@@ -38,8 +38,6 @@ sudo tar -C /usr/local -xvzf $goname
 rm -f $goname
 # install gotags
 brew install gotags
-# install golangci-lint
-go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
 
 echo -n "Copy dotfiles to local? (y/N) => "; read cp
 if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then

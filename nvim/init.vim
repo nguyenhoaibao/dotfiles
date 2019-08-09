@@ -31,7 +31,7 @@ Plug 'Shougo/echodoc.vim'
 
 " colorscheme
 Plug 'dracula/vim'
-Plug 'arcticicestudio/nord-vim' " should be used with nord-iterm2
+Plug 'arcticicestudio/nord-vim' " should be used with terminal support nord color
 
 " Language plugins
 Plug 'fatih/vim-go', { 'tag': '*' }
