@@ -23,7 +23,7 @@ nvm alias default node
 npm install --global prettier neovim
 
 # install Go
-goversion="1.12.7"
+goversion="1.13"
 goos="linux"
 goarch="amd64"
 goname="go$goversion.$goos-$goarch.tar.gz"
