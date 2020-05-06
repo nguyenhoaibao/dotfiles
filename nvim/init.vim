@@ -8,7 +8,7 @@ call plug#begin('~/.config/nvim/bundle')
 " General plugins
 Plug 'w0rp/ale', { 'tag': '*' }
 Plug 'Shougo/deoplete.nvim', { 'tag': '*', 'do': ':UpdateRemotePlugins' }
-Plug 'autozimu/LanguageClient-neovim', { 'commit': 'f71ab82', 'do': 'bash install.sh' }
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
 Plug 'itchyny/lightline.vim'
 Plug 'mgee/lightline-bufferline'
 Plug 'maximbaz/lightline-ale'
@@ -17,7 +17,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdtree-git-plugin'
 Plug 'scrooloose/nerdcommenter'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'tag': '*', 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-surround'
 Plug 'jiangmiao/auto-pairs'
@@ -28,13 +28,16 @@ Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-dispatch'
 Plug 'majutsushi/tagbar'
 Plug 'Shougo/echodoc.vim'
+Plug 'ianding1/leetcode.vim'
+Plug 'pangloss/vim-javascript'
 
 " colorscheme
 Plug 'dracula/vim'
-Plug 'arcticicestudio/nord-vim' " should be used with terminal support nord color
+Plug 'arcticicestudio/nord-vim' " should be used with nord-iterm2
 
 " Language plugins
-Plug 'fatih/vim-go', { 'tag': '*' }
+Plug 'fatih/vim-go', { 'commit': '07869cd' }
+Plug 'AndrewRadev/splitjoin.vim'
 Plug 'rust-lang/rust.vim'
 " Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
@@ -115,15 +118,15 @@ augroup vimrcEx
   \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
   \   exe "normal g`\"" |
   \ endif
+  autocmd BufReadPost fugitive://* set bufhidden=delete
 
   " Set syntax highlighting for specific file types
   autocmd BufRead,BufNewFile *.md set filetype=markdown
   autocmd BufRead,BufNewFile .{jscs,jshint,eslint}rc set filetype=json
-  autocmd BufNewFile,BufRead *.{js} setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
+  autocmd BufNewFile,BufRead *.{js,yaml} setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
   autocmd BufNewFile,BufRead *.{python,sh} setlocal expandtab tabstop=4 softtabstop=4 shiftwidth=4
   autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=8 softtabstop=8 shiftwidth=8
-  autocmd BufNewFile,BufRead *.proto setlocal noexpandtab tabstop=8 softtabstop=8 shiftwidth=8
-  autocmd BufEnter * EnableStripWhitespaceOnSave
+  autocmd BufNewFile,BufRead *.proto setlocal expandtab tabstop=2 softtabstop=2 shiftwidth=2
 augroup END
 
 " js folding
@@ -136,7 +139,9 @@ augroup end
 
 " Triger `autoread` when files changes on disk
 " https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
-autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
+" autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
+autocmd FocusGained,BufEnter,CursorHold,CursorHoldI *
+            \ if mode() !~ '\v(c|r.?|!|t)' && getcmdwintype() == '' | checktime | endif
 autocmd FileChangedShellPost * echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
 
 " nord-vim
@@ -225,6 +230,7 @@ nnoremap <Leader>gvd :Gvdiff<cr>
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 " ...with confirmation
 nnoremap <Leader>sc :%s/\<<C-r><C-w>\>//gc<Left><Left><Left>
+vnoremap <Leader>x :Glog -S"<C-r>"" -- %<CR>
 
 " auto fix some command typo
 command! -bang -nargs=? -complete=file W w<bang> <args>
@@ -250,36 +256,39 @@ let g:NERDTrimTrailingWhiteSpace = 1
 " fzf.vim
 let g:fzf_layout = { 'down': '~25%' }
 let g:fzf_tags_command = 'ctags -R --exclude=.git --exclude=node_modules --exclude=vendor'
-if executable('rg')
-  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*" --glob "!node_modules/*" --glob "!vendor/*"'
-  command! -bang -nargs=* Rg
-    \ call fzf#vim#grep(
-    \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-    \   <bang>0 ? fzf#vim#with_preview('up:60%')
-    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-    \   <bang>0)
-  nnoremap \ :Rg<SPACE>
-elseif executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git --ignore node_modules --ignore vendor -g ""'
-  command! -bang -nargs=* Ag
-    \ call fzf#vim#ag(<q-args>,
-    \   <bang>0 ? fzf#vim#with_preview('up:60%')
-    \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-    \   <bang>0)
-  command! -bang -nargs=+ -complete=dir Rag
-    \ call fzf#vim#ag_raw(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
-  nnoremap \ :Ag<SPACE>
-endif
+" if executable('rg')
+"   let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*" --glob "!node_modules/*" --glob "!vendor/*"'
+"   command! -bang -nargs=* Rg
+"     \ call fzf#vim#grep(
+"     \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+"     \   <bang>0 ? fzf#vim#with_preview('up:60%')
+"     \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+"     \   <bang>0)
+"   nnoremap \ :Rg<SPACE>
+" elseif executable('ag')
+"   let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git --ignore node_modules --ignore vendor -g ""'
+"   " command! -bang -nargs=* Ag
+"   "   \ call fzf#vim#ag(<q-args>,
+"   "   \   <bang>0 ? fzf#vim#with_preview('up:60%')
+"   "   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+"   "   \   <bang>0)
+"   command! -bang -nargs=+ -complete=dir Rag
+"     \ call fzf#vim#ag_raw(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
+"   nnoremap \ :Ag<SPACE>
+" endif
 nnoremap <Leader>pf :Files<cr>
 nnoremap <Leader>pb :Buffers<cr>
 nnoremap <Leader>pt :Tags<cr>
+let g:fzf_preview_window = ''
+nnoremap \ :Rg<SPACE>
 
 " deoplete
 let g:deoplete#enable_at_startup=1
-" call deoplete#custom#source('omni', 'mark', '')
-call deoplete#custom#source('', ' max_abbr_width', 0)
-call deoplete#custom#source('', 'max_kind_width', 0)
-call deoplete#custom#source('', 'max_info_width', 0)
+call deoplete#custom#source('_', 'max_abbr_width', 0)
+call deoplete#custom#source('_', 'max_kind_width', 0)
+call deoplete#custom#source('_', 'max_info_width', 120)
+call deoplete#custom#source('_', 'max_menu_width', 0)
+call deoplete#custom#source('omni', 'mark', '')
 call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })
 " tern
 if exists('g:plugs["tern_for_vim"]')
@@ -313,7 +322,7 @@ function! g:AutoCompleteOrSnippetsOrReturnTab()
 endfunction
 
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <expr><cr> pumvisible() ? deoplete#mappings#close_popup() : "\<cr>"
+inoremap <expr><cr> pumvisible() ? deoplete#close_popup() : "\<cr>"
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
 
 " ALE
@@ -327,15 +336,15 @@ let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] [%severity%] %s'
 let g:ale_linters_explicit = 1
 let g:ale_fix_on_save = 1
-let g:ale_linters = {
-\   'javascript': ['prettier'],
-\   'go': ['golangci-lint'],
-\}
-let g:ale_fixers = {
-\   'javascript': ['prettier_standard']
-\}
+" let g:ale_linters = {
+" \   'javascript': ['prettier']
+" \}
+" let g:ale_fixers = {
+" \   'javascript': ['prettier_standard']
+" \}
 let g:ale_go_golangci_lint_package = 1
-let g:ale_go_golangci_lint_options = '--disable-all --presets=bugs --enable=deadcode --enable=varcheck'
+" let g:ale_go_golangci_lint_options = '--disable-all --presets=bugs --enable=deadcode --enable=varcheck'
+let g:ale_go_golangci_lint_options = '--fast'
 
 " vim-tmux-navigator
 if has('nvim')
@@ -377,8 +386,6 @@ let g:tagbar_type_go = {
 " vim-go
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
-let g:go_def_mode='gopls'
-let g:go_info_mode='gopls'
 let g:go_auto_type_info = 0
 let g:go_metalinter_autosave = 0
 let g:go_highlight_functions = 1
@@ -386,6 +393,13 @@ let g:go_highlight_methods = 1
 let g:go_highlight_fields = 0
 let g:go_highlight_structs = 1
 let g:go_highlight_interfaces = 1
+let g:go_doc_popup_window = 1
+let g:go_gopls_complete_unimported = 1
+let g:go_gopls_use_placeholders = 0
+let g:go_term_mode = "terminal"
+let g:go_rename_command = "gopls"
+"let g:go_term_enabled = 1
+" let g:go_debug = ['lsp']
 " let g:go_highlight_operators = 1
 " let g:go_highlight_build_constraints = 1
 let g:go_debug_windows = {
@@ -413,3 +427,10 @@ let g:LanguageClient_serverCommands = {
 " let g:LanguageClient_loggingFile = expand('~/.config/nvim/LanguageClient.log')
 " let g:LanguageClient_loggingLevel = 'DEBUG'
 let g:LanguageClient_diagnosticsEnable = 0
+
+xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
+
+function! ExecuteMacroOverVisualRange()
+  echo "@".getcmdline()
+  execute ":'<,'>normal @".nr2char(getchar())
+endfunction
