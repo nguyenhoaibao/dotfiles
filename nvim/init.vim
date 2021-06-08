@@ -13,6 +13,7 @@ Plug 'itchyny/lightline.vim'
 Plug 'mgee/lightline-bufferline'
 Plug 'maximbaz/lightline-ale'
 Plug 'tpope/vim-fugitive', { 'tag': '*' }
+Plug 'tpope/vim-rhubarb'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdtree-git-plugin'
@@ -20,6 +21,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/fzf', { 'tag': '*', 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-cucumber'
 Plug 'jiangmiao/auto-pairs'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'christoomey/vim-tmux-navigator'
@@ -29,18 +31,22 @@ Plug 'tpope/vim-dispatch'
 Plug 'majutsushi/tagbar'
 Plug 'Shougo/echodoc.vim'
 Plug 'ianding1/leetcode.vim'
-Plug 'pangloss/vim-javascript'
+Plug 'hashivim/vim-terraform'
+Plug 'nguyenhoaibao/vim-base64'
+Plug 'jonathanfilip/vim-lucius'
+Plug 'dhruvasagar/vim-zoom'
 
 " colorscheme
 Plug 'dracula/vim'
 Plug 'arcticicestudio/nord-vim' " should be used with nord-iterm2
 
 " Language plugins
-Plug 'fatih/vim-go', { 'commit': '07869cd' }
+Plug 'fatih/vim-go', { 'tag': '*' }
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'rust-lang/rust.vim'
 " Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
+Plug 'pangloss/vim-javascript'
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'tomlion/vim-solidity'
 
@@ -107,6 +113,7 @@ endif
 set t_Co=256
 set termguicolors
 colorscheme nord
+"LuciusLightLowContrast
 
 augroup vimrcEx
   autocmd!
@@ -143,6 +150,24 @@ augroup end
 autocmd FocusGained,BufEnter,CursorHold,CursorHoldI *
             \ if mode() !~ '\v(c|r.?|!|t)' && getcmdwintype() == '' | checktime | endif
 autocmd FileChangedShellPost * echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
+
+" https://stackoverflow.com/questions/16743112/open-item-from-quickfix-window-in-vertical-split
+" This is only availale in the quickfix window, owing to the filetype
+" restriction on the autocmd (see below).
+function! <SID>OpenQuickfix(new_split_cmd)
+  " 1. the current line is the result idx as we are in the quickfix
+  let l:qf_idx = line('.')
+  " 2. jump to the previous window
+  wincmd p
+  " 3. switch to a new split (the new_split_cmd will be 'vnew' or 'split')
+  execute a:new_split_cmd
+  " 4. open the 'current' item of the quickfix list in the newly created buffer
+  "    (the current means, the one focused before switching to the new buffer)
+  execute l:qf_idx . 'cc'
+endfunction
+
+autocmd FileType qf nnoremap <buffer> <C-v> :call <SID>OpenQuickfix("vnew")<CR>
+autocmd FileType qf nnoremap <buffer> <C-x> :call <SID>OpenQuickfix("split")<CR>
 
 " nord-vim
 let g:nord_italic = 1
@@ -204,6 +229,8 @@ nnoremap <Leader>lc :lclose<cr>
 nnoremap g2 :diffg //2<cr>
 nnoremap g3 :diffg //3<cr>
 
+let g:terraform_fmt_on_save = 1
+
 " echodoc
 let g:echodoc_enable_at_startup = 1
 let g:echodoc#type = "echo"
@@ -230,7 +257,7 @@ nnoremap <Leader>gvd :Gvdiff<cr>
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 " ...with confirmation
 nnoremap <Leader>sc :%s/\<<C-r><C-w>\>//gc<Left><Left><Left>
-vnoremap <Leader>x :Glog -S"<C-r>"" -- %<CR>
+nnoremap \\ :Rg <C-r><C-w><CR>
 
 " auto fix some command typo
 command! -bang -nargs=? -complete=file W w<bang> <args>
@@ -256,30 +283,11 @@ let g:NERDTrimTrailingWhiteSpace = 1
 " fzf.vim
 let g:fzf_layout = { 'down': '~25%' }
 let g:fzf_tags_command = 'ctags -R --exclude=.git --exclude=node_modules --exclude=vendor'
-" if executable('rg')
-"   let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*" --glob "!node_modules/*" --glob "!vendor/*"'
-"   command! -bang -nargs=* Rg
-"     \ call fzf#vim#grep(
-"     \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
-"     \   <bang>0 ? fzf#vim#with_preview('up:60%')
-"     \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-"     \   <bang>0)
-"   nnoremap \ :Rg<SPACE>
-" elseif executable('ag')
-"   let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git --ignore node_modules --ignore vendor -g ""'
-"   " command! -bang -nargs=* Ag
-"   "   \ call fzf#vim#ag(<q-args>,
-"   "   \   <bang>0 ? fzf#vim#with_preview('up:60%')
-"   "   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-"   "   \   <bang>0)
-"   command! -bang -nargs=+ -complete=dir Rag
-"     \ call fzf#vim#ag_raw(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
-"   nnoremap \ :Ag<SPACE>
-" endif
 nnoremap <Leader>pf :Files<cr>
 nnoremap <Leader>pb :Buffers<cr>
 nnoremap <Leader>pt :Tags<cr>
-let g:fzf_preview_window = ''
+let g:fzf_preview_window = []
+" let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
 nnoremap \ :Rg<SPACE>
 
 " deoplete
@@ -292,8 +300,9 @@ call deoplete#custom#source('omni', 'mark', '')
 call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })
 " tern
 if exists('g:plugs["tern_for_vim"]')
-  let g:deoplete#omni#functions = {}
-  let g:deoplete#omni#functions.javascript = [ 'tern#Complete' ]
+  call g:deoplete#custom#var('javascript', 'tern#Complete')
+  " let g:deoplete#omni#functions = {}
+  " let g:deoplete#omni#functions.javascript = [ 'tern#Complete' ]
   let g:tern_request_timeout=1
   let g:tern#command = ['tern']
   let g:tern#arguments = ['--persistent']
@@ -352,6 +361,7 @@ if has('nvim')
 else
   namp <C-h> <C-w>h
 endif
+let g:tmux_navigator_disable_when_zoomed = 1
 
 " tagbar
 nmap <Leader>f :TagbarToggle<CR>
@@ -387,7 +397,6 @@ let g:tagbar_type_go = {
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
 let g:go_auto_type_info = 0
-let g:go_metalinter_autosave = 0
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_fields = 0
@@ -397,7 +406,8 @@ let g:go_doc_popup_window = 1
 let g:go_gopls_complete_unimported = 1
 let g:go_gopls_use_placeholders = 0
 let g:go_term_mode = "terminal"
-let g:go_rename_command = "gopls"
+nnoremap <Leader>gfs :GoFillStruct<cr>
+
 "let g:go_term_enabled = 1
 " let g:go_debug = ['lsp']
 " let g:go_highlight_operators = 1
