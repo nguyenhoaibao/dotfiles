@@ -8,7 +8,6 @@ call plug#begin('~/.config/nvim/bundle')
 " General plugins
 Plug 'w0rp/ale', { 'tag': '*' }
 Plug 'Shougo/deoplete.nvim', { 'tag': '*', 'do': ':UpdateRemotePlugins' }
-Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
 Plug 'itchyny/lightline.vim'
 Plug 'mgee/lightline-bufferline'
 Plug 'maximbaz/lightline-ale'
@@ -16,7 +15,7 @@ Plug 'tpope/vim-fugitive', { 'tag': '*' }
 Plug 'tpope/vim-rhubarb'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/nerdtree-git-plugin'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/fzf', { 'tag': '*', 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -44,7 +43,6 @@ Plug 'arcticicestudio/nord-vim' " should be used with nord-iterm2
 Plug 'fatih/vim-go', { 'tag': '*' }
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'rust-lang/rust.vim'
-" Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
 Plug 'pangloss/vim-javascript'
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
@@ -101,7 +99,7 @@ set foldlevelstart=5
 set nofoldenable
 
 " persistent undo
-if has('persistent_undo')
+if has('persistent-undo')
   call system('mkdir -p ~/.config/nvim/undo')
   set undofile
   set undodir=~/.config/nvim/undo
@@ -406,6 +404,9 @@ let g:go_doc_popup_window = 1
 let g:go_gopls_complete_unimported = 1
 let g:go_gopls_use_placeholders = 0
 let g:go_term_mode = "terminal"
+let g:go_gopls_options=['-remote=auto']
+let g:go_code_completion_enabled = 1
+
 nnoremap <Leader>gfs :GoFillStruct<cr>
 
 "let g:go_term_enabled = 1
@@ -426,17 +427,6 @@ autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
 autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit')
 autocmd Filetype go command! -bang AX call go#alternate#Switch(<bang>0, 'split')
 autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
-
-let g:LanguageClient_rootMarkers = {
-  \ 'go': ['.git', 'go.mod'],
-  \ }
-
-let g:LanguageClient_serverCommands = {
-  \ 'go': ['gopls']
- \ }
-" let g:LanguageClient_loggingFile = expand('~/.config/nvim/LanguageClient.log')
-" let g:LanguageClient_loggingLevel = 'DEBUG'
-let g:LanguageClient_diagnosticsEnable = 0
 
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
 
