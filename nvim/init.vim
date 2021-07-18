@@ -6,11 +6,10 @@ endif
 call plug#begin('~/.config/nvim/bundle')
 
 " General plugins
-Plug 'w0rp/ale', { 'tag': '*' }
+Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh' }
 Plug 'Shougo/deoplete.nvim', { 'tag': '*', 'do': ':UpdateRemotePlugins' }
 Plug 'itchyny/lightline.vim'
 Plug 'mgee/lightline-bufferline'
-Plug 'maximbaz/lightline-ale'
 Plug 'tpope/vim-fugitive', { 'tag': '*' }
 Plug 'tpope/vim-rhubarb'
 Plug 'airblade/vim-gitgutter'
@@ -90,6 +89,7 @@ set softtabstop=2
 "set textwidth=100
 "set colorcolumn=+1
 set noshowmode
+set shortmess+=c
 
 " Folding
 set foldmethod=indent
@@ -183,24 +183,15 @@ let g:lightline = {
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ],
-      \   'right': [ [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
-      \             [ 'line-info' ],
+      \   'right': [ [ 'line-info' ],
       \             [ 'percent' ],
       \             [ 'fileformat', 'fileencoding', 'filetype' ] ]
       \ },
       \ 'component_expand': {
       \   'buffers': 'lightline#bufferline#buffers',
-      \   'linter_checking': 'lightline#ale#checking',
-      \   'linter_warnings': 'lightline#ale#warnings',
-      \   'linter_errors': 'lightline#ale#errors',
-      \   'linter_ok': 'lightline#ale#ok'
       \ },
       \ 'component_type': {
       \   'buffers': 'tabsel',
-      \   'linter_checking': 'left',
-      \   'linter_warnings': 'warning',
-      \   'linter_errors': 'error',
-      \   'linter_ok': 'left'
       \ },
       \ 'component_function': {
       \   'gitbranch': 'fugitive#head'
@@ -230,8 +221,8 @@ nnoremap g3 :diffg //3<cr>
 let g:terraform_fmt_on_save = 1
 
 " echodoc
-let g:echodoc_enable_at_startup = 1
-let g:echodoc#type = "echo"
+let g:echodoc#enable_at_startup = 1
+let g:echodoc#type = 'echo'
 
 " strip whitespace on save
 let g:strip_whitespace_on_save = 1
@@ -291,11 +282,11 @@ nnoremap \ :Rg<SPACE>
 " deoplete
 let g:deoplete#enable_at_startup=1
 call deoplete#custom#source('_', 'max_abbr_width', 0)
-call deoplete#custom#source('_', 'max_kind_width', 0)
-call deoplete#custom#source('_', 'max_info_width', 120)
+" call deoplete#custom#source('_', 'max_kind_width', 0)
+" call deoplete#custom#source('_', 'max_info_width', 120)
 call deoplete#custom#source('_', 'max_menu_width', 0)
-call deoplete#custom#source('omni', 'mark', '')
-call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })
+" call deoplete#custom#source('omni', 'mark', '')
+
 " tern
 if exists('g:plugs["tern_for_vim"]')
   call g:deoplete#custom#var('javascript', 'tern#Complete')
@@ -311,47 +302,12 @@ let g:deoplete#sources#ternjs#docs = 1
 
 " ultisnips
 let g:UltiSnipsExpandTrigger="<c-j>"
-let g:UltiSnipsJumpForwardTrigner="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
-
-function! g:AutoCompleteOrSnippetsOrReturnTab()
- if pumvisible()
-   return "\<c-n>"
- endif
- call UltiSnips#ExpandSnippet()
- if g:ulti_expand_res == 0
-    call UltiSnips#JumpForwards()
-    if g:ulti_jump_forwards_res == 0
-      return "\<tab>"
-    endif
- endif
- return ""
-endfunction
+let g:UltiSnipsJumpForwardTrigner="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <expr><cr> pumvisible() ? deoplete#close_popup() : "\<cr>"
+" inoremap <expr><cr> pumvisible() ? deoplete#close_popup() : "\<cr>"
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
-
-" ALE
-nnoremap <Leader>aj :ALENextWrap<cr>
-nnoremap <Leader>ak :ALEPreviousWrap<cr>
-let g:ale_open_list = 1
-let g:ale_list_window_size = 3
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] [%severity%] %s'
-let g:ale_linters_explicit = 1
-let g:ale_fix_on_save = 1
-" let g:ale_linters = {
-" \   'javascript': ['prettier']
-" \}
-" let g:ale_fixers = {
-" \   'javascript': ['prettier_standard']
-" \}
-let g:ale_go_golangci_lint_package = 1
-" let g:ale_go_golangci_lint_options = '--disable-all --presets=bugs --enable=deadcode --enable=varcheck'
-let g:ale_go_golangci_lint_options = '--fast'
 
 " vim-tmux-navigator
 if has('nvim')
@@ -405,14 +361,17 @@ let g:go_gopls_complete_unimported = 1
 let g:go_gopls_use_placeholders = 0
 let g:go_term_mode = "terminal"
 let g:go_gopls_options=['-remote=auto']
-let g:go_code_completion_enabled = 1
-
-nnoremap <Leader>gfs :GoFillStruct<cr>
-
+let g:go_code_completion_enabled = 0
+let g:go_echo_go_info = 0
+let g:go_gopls_enabled = 1
+let g:go_doc_keywordprg_enabled = 0
+" let g:go_def_mapping_enabled = 0
 "let g:go_term_enabled = 1
 " let g:go_debug = ['lsp']
 " let g:go_highlight_operators = 1
 " let g:go_highlight_build_constraints = 1
+
+nnoremap <Leader>gfs :GoFillStruct<cr>
 let g:go_debug_windows = {
   \ 'out':   'botright 10new',
   \ 'vars':  'leftabove 80vnew',
@@ -427,6 +386,19 @@ autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
 autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit')
 autocmd Filetype go command! -bang AX call go#alternate#Switch(<bang>0, 'split')
 autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
+
+" nmap <silent><c-]> <Plug>(lcn-definition)
+nmap <silent>K <Plug>(lcn-hover)
+let g:LanguageClient_showCompletionDocs = 0
+let g:LanguageClient_hasSnippetSupport = 1
+let g:LanguageClient_hideVirtualTextsOnInsert = 1
+let g:LanguageClient_diagnosticsEnable = 1
+let g:LanguageClient_rootMarkers = {
+  \ 'go': ['.git', 'go.mod'],
+  \ }
+let g:LanguageClient_serverCommands = {
+  \ 'go': ['gopls', '-remote=auto']
+  \ }
 
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
 
