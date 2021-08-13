@@ -23,7 +23,7 @@ jobs:
         id: extract_branch
 
       - name: On pushed to release
-        if: github.event.pull_request.merged == false && contains(steps.extract_branch.outputs.branch, "release") == true
+        if: github.event.pull_request.merged == false && contains(steps.extract_branch.outputs.branch, 'release') == true
         run: |
           echo "release merged"
 
