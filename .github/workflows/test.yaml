@@ -1,12 +1,6 @@
 on:
   pull_request:
-    branches:
-      - release/*
     types: [closed]
-  push:
-    branches:
-      - release/*
-      - develop
 
 jobs:
   setup:
@@ -22,18 +16,19 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
-      - name: On pushed to release
-        if: github.event.pull_request.merged == false && contains(steps.extract_branch.outputs.branch, 'release') == true
+      - name: Deploy to staging
+        if: github.event.pull_request.merged == true && contains(github.base_ref, 'release/') == true
+        # if: github.event.pull_request.merged == false && contains(steps.extract_branch.outputs.branch, 'release') == true
         run: |
-          echo "release merged"
+          echo "deploy to staging"
 
-      - name: On merged to develop
-        if: github.event.pull_request.merged == true && steps.extract_branch.outputs.branch == 'develop'
+      - name: Deploy to UAT
+        if: contains(github.head_ref, 'release/') == true && github.event.pull_request.merged == true && github.base_ref == 'develop'
         run: |
           echo "release case"
 
-      - name: On pushed to develop
-        if: github.event.pull_request.merged == false && steps.extract_branch.outputs.branch == 'develop'
+      - name: Deploy to UAT
+        if: contains(github.head_ref, 'release/') == false && github.event.pull_request.merged == true && github.base_ref == 'develop'
         run: |
           echo "hotfix case"
 
