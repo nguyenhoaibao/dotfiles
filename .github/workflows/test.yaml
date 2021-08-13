@@ -40,7 +40,7 @@ jobs:
           head_ref=${{ github.head_ref }} # source branch
           base_ref=${{ github.base_ref }} # target branch
 
-          if [[ $head_ref == "release/"* ]]; then
+          if [[ $base_ref == "release/"* ]]; then
             echo "deploy to staging"
           elif [[ $head_ref == "release/"* && $base_ref == "develop" ]]; then
             echo "release case"
