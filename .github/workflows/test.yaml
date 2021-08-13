@@ -5,6 +5,7 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-20.04
+    if: github.event.pull_request.merged == true
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
@@ -16,19 +17,33 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
-      - name: Deploy to staging
-        if: github.event.pull_request.merged == true && contains(github.base_ref, 'release/') == true
-        # if: github.event.pull_request.merged == false && contains(steps.extract_branch.outputs.branch, 'release') == true
-        run: |
-          echo "deploy to staging"
+      # - name: Deploy to staging
+      #   if: github.event.pull_request.merged == true && contains(github.base_ref, 'release/') == true
+      #   # if: github.event.pull_request.merged == false && contains(steps.extract_branch.outputs.branch, 'release') == true
+      #   run: |
+      #     echo "deploy to staging"
+      #
+      # - name: Deploy to UAT
+      #   if: contains(github.head_ref, 'release/') == true && github.event.pull_request.merged == true && github.base_ref == 'develop'
+      #   run: |
+      #     echo "release case"
+      #
+      # - name: Deploy to UAT
+      #   if: contains(github.head_ref, 'release/') == false && github.event.pull_request.merged == true && github.base_ref == 'develop'
+      #   run: |
+      #     echo "hotfix case"
 
-      - name: Deploy to UAT
-        if: contains(github.head_ref, 'release/') == true && github.event.pull_request.merged == true && github.base_ref == 'develop'
+      - name: Script
         run: |
-          echo "release case"
+          set -e
 
-      - name: Deploy to UAT
-        if: contains(github.head_ref, 'release/') == false && github.event.pull_request.merged == true && github.base_ref == 'develop'
-        run: |
-          echo "hotfix case"
+          head_ref=${{ github.head_ref }} # source branch
+          base_ref=${{ github.base_ref }} # target branch
 
+          if [[ $head_ref == "release/"* ]]; then
+            echo "deploy to staging"
+          elif [[ $head_ref == "release/"* && $base_ref == "develop" ]]; then
+            echo "release case"
+          elif [[ $head_ref != "release/"* && $base_ref == "develop" ]]; then
+            echo "hotfix case"
+          fi
