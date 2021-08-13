@@ -1,0 +1,39 @@
+on:
+  pull_request:
+    branches:
+      - release/*
+    types: [closed]
+  push:
+    branches:
+      - release/*
+      - develop
+
+jobs:
+  setup:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: On pushed to release
+        if: github.event.pull_request.merged == false && contains(steps.extract_branch.outputs.branch, "release") == true
+        run: |
+          echo "release merged"
+
+      - name: On merged to develop
+        if: github.event.pull_request.merged == true && steps.extract_branch.outputs.branch == 'develop'
+        run: |
+          echo "release case"
+
+      - name: On pushed to develop
+        if: github.event.pull_request.merged == false && steps.extract_branch.outputs.branch == 'develop'
+        run: |
+          echo "hotfix case"
+
