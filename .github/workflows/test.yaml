@@ -1,11 +1,9 @@
 on:
-  pull_request:
-    types: [closed]
+  push:
 
 jobs:
   setup:
-    runs-on: ubuntu-20.04
-    if: github.event.pull_request.merged == true
+    runs-on: [self-hosted]
     steps:
       - name: Checkout source
         uses: actions/checkout@v2
@@ -14,36 +12,5 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
-
-      # - name: Deploy to staging
-      #   if: github.event.pull_request.merged == true && contains(github.base_ref, 'release/') == true
-      #   # if: github.event.pull_request.merged == false && contains(steps.extract_branch.outputs.branch, 'release') == true
-      #   run: |
-      #     echo "deploy to staging"
-      #
-      # - name: Deploy to UAT
-      #   if: contains(github.head_ref, 'release/') == true && github.event.pull_request.merged == true && github.base_ref == 'develop'
-      #   run: |
-      #     echo "release case"
-      #
-      # - name: Deploy to UAT
-      #   if: contains(github.head_ref, 'release/') == false && github.event.pull_request.merged == true && github.base_ref == 'develop'
-      #   run: |
-      #     echo "hotfix case"
-
-      - name: Script
         run: |
-          set -e
-
-          head_ref=${{ github.head_ref }} # source branch
-          base_ref=${{ github.base_ref }} # target branch
-
-          if [[ $base_ref == "release/"* ]]; then
-            echo "deploy to staging"
-          elif [[ $head_ref == "release/"* && $base_ref == "develop" ]]; then
-            echo "release case"
-          elif [[ $head_ref != "release/"* && $base_ref == "develop" ]]; then
-            echo "hotfix case"
-          fi
+          sleep 500
