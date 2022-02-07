@@ -52,6 +52,9 @@ fi
 # install oh-my-zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
+# install zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
 echo -n "Copy dotfiles to local? (y/N) => "; read cp
 if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
     echo "Backing up old dotfiles"
@@ -70,14 +73,16 @@ if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
 
     echo "Copying dotfiles..."
     mkdir -p ~/.config/alacritty
-    cp zshrc ~/.zshrc
-    cp tmux.linux.conf ~/.tmux.conf
     cp alacritty.yml ~/.config/alacritty/alacritty.yml
     cp -R nvim/init.vim ~/.config/nvim/init.vim
+
+    mkdir -p ~/.zsh/functions
+    cp zshrc ~/.zshrc
+    cp zsh/functions/fbr ~/.zsh/functions/fbr
+    cp tmux.linux.conf ~/.tmux.conf
 fi
 
-# install zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+mkdir -p ~/.tmux
 
 # install tpm
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
