@@ -8,7 +8,10 @@ sudo apt-get install -y ca-certificates curl gnupg silversearcher-ag ripgrep \
     make binutils bison gcc build-essential
 
 # install neovim
-sudo apt-get install -y neovim python-dev python3-dev python3-pip python3-neovim
+sudo apt-get install -y python-dev python3-dev python3-pip python3-neovim
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+sudo install -o root -g root -m 0755 nvim.appimage /usr/local/bin/nvim.appimage
+pip3 install --user --upgrade pynvim msgpack
 
 # install nvm
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.1/install.sh | bash
