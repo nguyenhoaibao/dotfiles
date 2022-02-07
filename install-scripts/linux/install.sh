@@ -85,4 +85,4 @@ git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-m
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # kube-tmux
-git clone https://github.com/jonmosco/kube-tmux.git ~/.tmux
+git clone https://github.com/jonmosco/kube-tmux.git ~/.tmux/kube-tmux
