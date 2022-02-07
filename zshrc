@@ -16,13 +16,13 @@ if [ -f ~/.zsh/alias ]; then
 fi
 
 export EDITOR="/usr/local/bin/nvim.appimage"
-export GOPATH="$HOME/go"
-export GOROOT="/usr/local/go"
 export PATH="$PATH:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/snap/bin"
-export PATH=$PATH:"$GOROOT/bin":"$GOPATH/bin"
+export PATH="$PATH:$HOME/.rvm/bin"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+[[ -s "/home/bao/.gvm/scripts/gvm" ]] && source "/home/bao/.gvm/scripts/gvm"
 
 bindkey '^ ' autosuggest-accept
 
@@ -31,9 +31,6 @@ bindkey '^ ' autosuggest-accept
 export FZF_DEFAULT_OPTS='--bind=ctrl-f:preview-down,ctrl-b:preview-up'
 
 eval "$(direnv hook zsh)"
-
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
 
 fpath=(
   ~/.zsh/functions

@@ -20,7 +20,7 @@ npm install --global prettier neovim yarn
 # install gvm
 bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
 . $HOME/.gvm/scripts/gvm
-gvm install go1.17
+gvm install go1.17 -B
 gvm use go1.17 --default
 
 # rustup
