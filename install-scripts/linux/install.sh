@@ -37,11 +37,21 @@ sudo usermod -aG docker $USER
 echo -n "Install kubectl and helm? (y/N) => "; read cp
 if [[ $cp == "y" ]]; then
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    chmod +x kubectl
+    sudo mv kubectl /usr/local/bin/kubectl
 
-    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
-    bash get_helm.sh
-    rm -f ./get_helm.sh
+    curl -LO https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz
+    tar xzf helm-v3.8.0-linux-amd64.tar.gz
+    sudo mv linux-amd64/helm /usr/local/bin/helm
+    rm -f helm-v3.8.0-linux-amd64.tar.gz
+    rm -rf linux-amd64
+
+    curl -LO https://github.com/derailed/k9s/releases/download/v0.25.18/k9s_Linux_x86_64.tar.gz
+    tar xzf k9s_Linux_x86_64.tar.gz
+    sudo mv k9s /usr/local/bin/k9s
+    rm -f k9s_Linux_x86_64.tar.gz
+    rm -f README.md
+    rm -f LICENSE
 fi
 
 echo -n "Install gcloud? (y/N) => "; read cp
