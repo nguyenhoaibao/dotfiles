@@ -69,11 +69,11 @@ if [[ $cp == "y" ]] || [[ $cp == "Y" ]] ; then
     fi
 
     echo "Copying dotfiles..."
-    mkdir -p ~/.config
+    mkdir -p ~/.config/alacritty
     cp zshrc ~/.zshrc
     cp tmux.linux.conf ~/.tmux.conf
     cp alacritty.yml ~/.config/alacritty/alacritty.yml
-    cp -R nvim ~/.config
+    cp -R nvim/init.vim ~/.config/nvim/init.vim
 fi
 
 # install zsh-autosuggestions
