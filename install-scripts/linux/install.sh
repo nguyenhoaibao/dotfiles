@@ -4,11 +4,11 @@ sudo apt-get update
 sudo apt-get install -y zsh
 sudo apt-get install -y ca-certificates curl gnupg silversearcher-ag ripgrep \
     git wget direnv tmux fonts-firacode fzf \
-    xclip universal-ctags jq lsb-release apt-transport-https
+    xclip universal-ctags jq lsb-release apt-transport-https \
+    make binutils bison gcc build-essential
 
 # install neovim
-sudo apt-get install -y neovim python-dev python-pip python3-dev python3-pip \
-    python-neovim python3-neovim
+sudo apt-get install -y neovim python-dev python3-dev python3-pip python3-neovim
 
 # install nvm
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.39.1/install.sh | bash
