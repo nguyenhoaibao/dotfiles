@@ -31,7 +31,6 @@ Plug 'Shougo/echodoc.vim'
 Plug 'ianding1/leetcode.vim'
 Plug 'hashivim/vim-terraform'
 Plug 'nguyenhoaibao/vim-base64'
-Plug 'jonathanfilip/vim-lucius'
 Plug 'dhruvasagar/vim-zoom'
 
 " colorscheme
@@ -46,6 +45,9 @@ Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
 Plug 'pangloss/vim-javascript'
 Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 Plug 'tomlion/vim-solidity'
+
+Plug 'neovim/nvim-lspconfig'
+Plug 'deoplete-plugins/deoplete-lsp'
 
 call plug#end()
 
@@ -77,6 +79,7 @@ set clipboard=unnamedplus
 set tags=./tags;,tags;
 filetype plugin indent on
 set completeopt-=preview
+set completeopt+=menuone,noinsert,noselect
 
 " Softtabs
 set expandtab
@@ -222,11 +225,15 @@ let g:terraform_fmt_on_save = 1
 
 " echodoc
 let g:echodoc#enable_at_startup = 1
-let g:echodoc#type = 'echo'
+let g:echodoc#type = 'popup'
+highlight link EchoDocPopup Pmenu
 
 " strip whitespace on save
 let g:strip_whitespace_on_save = 1
 let g:strip_whitespace_confirm = 0
+
+" gitgutter
+let g:gitgutter_close_preview_on_escape = 1
 
 " fugitive git bindings
 let g:fugitive_force_bang_command = 1
@@ -277,6 +284,10 @@ nnoremap <Leader>pb :Buffers<cr>
 nnoremap <Leader>pt :Tags<cr>
 let g:fzf_preview_window = []
 " let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case --hidden --glob "!.git/*" -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
 nnoremap \ :Rg<SPACE>
 
 " deoplete
@@ -286,6 +297,7 @@ call deoplete#custom#source('_', 'max_abbr_width', 0)
 " call deoplete#custom#source('_', 'max_info_width', 120)
 call deoplete#custom#source('_', 'max_menu_width', 0)
 " call deoplete#custom#source('omni', 'mark', '')
+" call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })
 
 " tern
 if exists('g:plugs["tern_for_vim"]')
@@ -348,6 +360,9 @@ let g:tagbar_type_go = {
 \ }
 
 " vim-go
+let g:go_gopls_enabled = 1
+let g:go_imports_autosave = 1
+let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
 let g:go_list_type = "quickfix"
 let g:go_auto_type_info = 0
@@ -357,19 +372,18 @@ let g:go_highlight_fields = 0
 let g:go_highlight_structs = 1
 let g:go_highlight_interfaces = 1
 let g:go_doc_popup_window = 1
-let g:go_gopls_complete_unimported = 1
-let g:go_gopls_use_placeholders = 0
+let g:go_gopls_complete_unimported = 0
+let g:go_gopls_use_placeholders = 1
 let g:go_term_mode = "terminal"
 let g:go_gopls_options=['-remote=auto']
 let g:go_code_completion_enabled = 0
 let g:go_echo_go_info = 0
-let g:go_gopls_enabled = 1
 let g:go_doc_keywordprg_enabled = 0
+nnoremap <Leader><Space> :GoBuild<cr>
 " let g:go_def_mapping_enabled = 0
 "let g:go_term_enabled = 1
 " let g:go_debug = ['lsp']
 " let g:go_highlight_operators = 1
-" let g:go_highlight_build_constraints = 1
 
 nnoremap <Leader>gfs :GoFillStruct<cr>
 let g:go_debug_windows = {
@@ -390,15 +404,17 @@ autocmd Filetype go command! -bang AT call go#alternate#Switch(<bang>0, 'tabe')
 " nmap <silent><c-]> <Plug>(lcn-definition)
 nmap <silent>K <Plug>(lcn-hover)
 let g:LanguageClient_showCompletionDocs = 0
-let g:LanguageClient_hasSnippetSupport = 1
+let g:LanguageClient_hasSnippetSupport = 0
 let g:LanguageClient_hideVirtualTextsOnInsert = 1
-let g:LanguageClient_diagnosticsEnable = 1
+let g:LanguageClient_diagnosticsEnable = 0
+let g:LanguageClient_useFloatingHover = 1
 let g:LanguageClient_rootMarkers = {
   \ 'go': ['.git', 'go.mod'],
   \ }
 let g:LanguageClient_serverCommands = {
   \ 'go': ['gopls', '-remote=auto']
   \ }
+" autocmd BufWritePre *.go :call LanguageClient#textDocument_formatting_sync()
 
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
 

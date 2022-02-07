@@ -10,7 +10,6 @@ source <(helm completion zsh)
 
 alias vim="nvim.appimage"
 alias nvim="nvim.appimage"
-alias tx="tmuxinator"
 alias t="terraform"
 if [ -f ~/.zsh/alias ]; then
   source ~/.zsh/alias
