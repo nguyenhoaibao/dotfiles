@@ -3,7 +3,7 @@
 sudo apt-get update
 sudo apt-get install -y zsh
 sudo apt-get install -y ca-certificates curl gnupg silversearcher-ag ripgrep \
-    git wget direnv tmux alacritty fonts-firacode fzf \
+    git wget direnv tmux fonts-firacode fzf \
     xclip universal-ctags jq lsb-release apt-transport-https
 
 # install neovim
@@ -22,14 +22,11 @@ bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/bins
 gvm install go1.17
 gvm use go1.17 --default
 
+# rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
 # install Docker
-# See: https://docs.docker.com/install/linux/docker-ce/ubuntu/
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+curl -fsSL https://get.docker.com | sh
 sudo groupadd docker
 sudo usermod -aG docker $USER
 
