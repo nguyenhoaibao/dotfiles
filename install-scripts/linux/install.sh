@@ -1,8 +1,7 @@
 #!/bin/bash
 
 sudo apt-get update
-sudo apt-get install -y zsh
-sudo apt-get install -y ca-certificates curl gnupg silversearcher-ag ripgrep \
+sudo apt-get install -y zsh ca-certificates curl gnupg silversearcher-ag ripgrep \
     git wget direnv tmux fonts-firacode fzf \
     xclip universal-ctags jq lsb-release apt-transport-https \
     make binutils bison gcc build-essential
@@ -56,10 +55,13 @@ fi
 
 echo -n "Install gcloud? (y/N) => "; read cp
 if [[ $cp == "y" ]]; then
-    # See https://cloud.google.com/sdk/docs/downloads-apt-get
-    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-    sudo apt-get update && sudo apt-get install google-cloud-sdk
+    curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-371.0.0-linux-x86_64.tar.gz
+    mkdir -p ~/.zsh
+    tar xzf google-cloud-sdk-371.0.0-linux-x86_64.tar.gz -C ~/.zsh
+    ~/.zsh/google-cloud-sdk/install.sh --quiet \
+        --usage-reporting false \
+        --path-update false \
+        --command-completion false
 fi
 
 # install oh-my-zsh

@@ -20,9 +20,11 @@ export PATH="$PATH:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/snap/bin"
 export PATH="$PATH:$HOME/.rvm/bin"
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
 
-[[ -s "/home/bao/.gvm/scripts/gvm" ]] && source "/home/bao/.gvm/scripts/gvm"
+[[ -s "~/.gvm/scripts/gvm" ]] && source "~/.gvm/scripts/gvm"
+if [ -f "~/.zsh/google-cloud-sdk/completion.zsh.inc" ]; then source "~/.zsh/google-cloud-sdk/completion.zsh.inc"; fi
+if [ -f "~/.zsh/google-cloud-sdk/path.zsh.inc" ]; then source "~/.zsh/google-cloud-sdk/path.zsh.inc"; fi
 
 bindkey '^ ' autosuggest-accept
 
