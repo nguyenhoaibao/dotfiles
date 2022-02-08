@@ -16,7 +16,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'scrooloose/nerdcommenter'
-" Plug 'junegunn/fzf', { 'tag': '*', 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'tag': '*', 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-cucumber'
@@ -34,11 +34,10 @@ Plug 'nguyenhoaibao/vim-base64'
 Plug 'dhruvasagar/vim-zoom'
 
 " colorscheme
-Plug 'dracula/vim'
 Plug 'arcticicestudio/nord-vim' " should be used with nord-iterm2
 
 " Language plugins
-Plug 'fatih/vim-go', { 'tag': '*' }
+Plug 'fatih/vim-go', { 'tag': '*', 'do': ':GoInstallBinaries' }
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'rust-lang/rust.vim'
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install', 'for': ['javascript'] }
