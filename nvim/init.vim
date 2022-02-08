@@ -238,15 +238,15 @@ let g:gitgutter_close_preview_on_escape = 1
 let g:fugitive_force_bang_command = 1
 nnoremap <Leader>gs :Gstatus<cr>
 nnoremap <Leader>gco :Gcommit -v -q<cr>
-nnoremap <Leader>gt :Gcommit -v -q %:p<cr>
+nnoremap <Leader>gt :Git commit -v -q %:p<cr>
 nnoremap <Leader>gr :Gread<cr>
 nnoremap <Leader>gw :Gwrite<cr><cr>
 nnoremap <Leader>gl :silent! Glog<CR>:bot copen<CR>
 nnoremap <Leader>gb :Git branch<Space>
 nnoremap <Leader>gch :Git checkout<Space>
-nnoremap <Leader>gpp :Gpush<Space>
-nnoremap <Leader>gpl :Gpull<Space>
-nnoremap <Leader>gvd :Gvdiff<cr>
+nnoremap <Leader>gpp :Git push<Space>
+nnoremap <Leader>gpl :Git pull<Space>
+nnoremap <Leader>gvd :Gvdiffsplit<cr>
 
 " Key map for quick substitute a word...
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
