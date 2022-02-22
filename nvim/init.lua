@@ -80,7 +80,6 @@ local options = {
   clipboard = 'unnamedplus',
   undofile = true,
   completeopt = 'menu,menuone,noselect',
-  updatetime = 100,
 }
 
 vim.opt.shortmess:append 'c'
@@ -187,6 +186,7 @@ require('nvim-tree').setup {
     }
   }
 }
+vim.cmd('autocmd BufEnter NvimTree setlocal cursorline')
 vim.api.nvim_set_keymap('n', '<Leader>d', ':NvimTreeToggle<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'F', ':NvimTreeFindFileToggle<CR>', { noremap = true })
 
@@ -206,8 +206,19 @@ require('gitsigns').setup {
     topdelete = { text = '‾' },
     changedelete = { text = '~' },
   },
+  on_attach = function(bufnr)
+    local function map(mode, lhs, rhs, opts)
+        opts = vim.tbl_extend('force', {noremap = true, silent = true}, opts or {})
+        vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
+    end
+
+    map('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
+    map('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
+    map('n', '<leader>td', '<cmd>Gitsigns toggle_deleted<CR>')
+  end
 }
 
+-- Telescope
 local actions = require("telescope.actions")
 require('telescope').setup {
   defaults = {
