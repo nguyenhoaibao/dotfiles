@@ -22,9 +22,12 @@ export PATH="$PATH:$HOME/.rvm/bin"
 export NVM_DIR="$HOME/.nvm"
 [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
 
-[[ -s "~/.gvm/scripts/gvm" ]] && source "~/.gvm/scripts/gvm"
-if [ -f "~/.zsh/google-cloud-sdk/completion.zsh.inc" ]; then source "~/.zsh/google-cloud-sdk/completion.zsh.inc"; fi
-if [ -f "~/.zsh/google-cloud-sdk/path.zsh.inc" ]; then source "~/.zsh/google-cloud-sdk/path.zsh.inc"; fi
+export GVM_DIR="$HOME/.gvm"
+[[ -s "$GVM_DIR/scripts/gvm" ]] && source "$GVM_DIR/scripts/gvm"
+
+export GCLOUD_SDK_DIR="$HOME/.zsh/google-cloud-sdk"
+[[ -s "$GCLOUD_SDK_DIR/completion.zsh.inc" ]] && source "$GCLOUD_SDK_DIR/completion.zsh.inc"
+[[ -s "$GCLOUD_SDK_DIR/path.zsh.inc" ]] && source "$GCLOUD_SDK_DIR/path.zsh.inc"
 
 bindkey '^ ' autosuggest-accept
 
@@ -39,3 +42,4 @@ fpath=(
   $fpath
 )
 autoload -Uz $fpath[1]/*(.:t)
+autoload -Uz compinit && compinit
