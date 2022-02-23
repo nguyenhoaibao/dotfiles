@@ -48,7 +48,13 @@ require('packer').startup(function(use)
   use 'pangloss/vim-javascript'
   use 'leafgarland/typescript-vim'
   use 'tomlion/vim-solidity'
-  use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } }
+  use {
+    'nvim-telescope/telescope.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope-live-grep-raw.nvim',
+    },
+  }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use 'arcticicestudio/nord-vim'
   use 'nvim-lualine/lualine.nvim'
@@ -80,6 +86,7 @@ local options = {
   clipboard = 'unnamedplus',
   undofile = true,
   completeopt = 'menu,menuone,noselect',
+  -- updatetime = 100,
 }
 
 vim.opt.shortmess:append 'c'
@@ -186,16 +193,9 @@ require('nvim-tree').setup {
     }
   }
 }
-vim.cmd('autocmd BufEnter NvimTree setlocal cursorline')
+vim.cmd('autocmd BufWinEnter NvimTree setlocal cursorline')
 vim.api.nvim_set_keymap('n', '<Leader>d', ':NvimTreeToggle<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', 'F', ':NvimTreeFindFileToggle<CR>', { noremap = true })
-
-
---Map blankline
-vim.g.indent_blankline_char = '┊'
-vim.g.indent_blankline_filetype_exclude = { 'help', 'packer' }
-vim.g.indent_blankline_buftype_exclude = { 'terminal', 'nofile' }
-vim.g.indent_blankline_show_trailing_blankline_indent = false
 
 -- Gitsigns
 require('gitsigns').setup {
@@ -236,7 +236,8 @@ require('telescope').load_extension 'fzf'
 vim.api.nvim_set_keymap('n', '<leader>pb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<leader>pf', [[<cmd>lua require('telescope.builtin').find_files({previewer = false, hidden = true})<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '\\\\', [[<cmd>lua require('telescope.builtin').grep_string({hidden = true})<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '\\', [[<cmd>lua require('telescope.builtin').live_grep({hidden = true})<CR>]], { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('n', '\\', [[<cmd>lua require('telescope.builtin').live_grep({hidden = true})<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '\\', [[<cmd>lua require('telescope').extensions.live_grep_raw.live_grep_raw({hidden = true})<CR>]], { noremap = true, silent = true })
 
 cfg = {
   bind = true,
@@ -325,6 +326,7 @@ end
 -- nvim-cmp setup
 local cmp = require 'cmp'
 cmp.setup {
+  preselect = cmp.PreselectMode.None,
   snippet = {
     expand = function(args)
       vim.fn["vsnip#anonymous"](args.body)
@@ -355,10 +357,10 @@ cmp.setup {
     },
   },
   sources = {
-    { name = 'nvim_lsp', priority = 100 },
-    { name = 'vsnip', priority = 2 },
-    { name = 'path', priority = 3 },
-    { name = 'buffer', priority = 4 },
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' },
+    { name = 'path' },
+    { name = 'buffer' },
   }
 }
 -- vim: ts=2 sts=2 sw=2 et
