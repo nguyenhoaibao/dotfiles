@@ -29,7 +29,7 @@ require('packer').startup(function(use)
   use 'scrooloose/nerdcommenter'
   use 'tpope/vim-surround'
   use 'tpope/vim-cucumber'
-  use 'jiangmiao/auto-pairs'
+  use 'windwp/nvim-autopairs'
   use 'ntpeters/vim-better-whitespace'
   use 'christoomey/vim-tmux-navigator'
   use 'terryma/vim-multiple-cursors'
@@ -167,13 +167,18 @@ vim.api.nvim_set_keymap('', '<BS>', ':<C-u>TmuxNavigateLeft<CR>', {})
 vim.g.tmux_navigator_disable_when_zoomed = 1
 
 -- vim-go
+vim.g.go_gopls_enabled = 0
+vim.g.go_fmt_autosave = 0
 vim.g.go_imports_autosave = 0
 vim.g.go_gopls_use_placeholders = 0
 vim.g.go_term_mode = 'terminal'
 vim.g.go_code_completion_enabled = 0
 vim.g.go_doc_keywordprg_enabled = 0
 
---Set statusbar
+--
+require('nvim-autopairs').setup{}
+
+--
 require('lualine').setup {
   options = {
     icons_enabled = false,
@@ -183,6 +188,7 @@ require('lualine').setup {
   },
 }
 
+--
 require('nvim-tree').setup {
   view = {
     mappings = {
@@ -241,10 +247,10 @@ vim.api.nvim_set_keymap('n', '\\', [[<cmd>lua require('telescope').extensions.li
 
 cfg = {
   bind = true,
+  hint_prefix = '',
   handler_opts = {
     border = 'rounded',
-    hint_prefix = ''
-  }
+  },
 }
 require 'lsp_signature'.setup(cfg)
 
@@ -303,7 +309,7 @@ lspconfig.tsserver.setup {
 }
 
 lspconfig.gopls.setup {
-  cmd = {"gopls", "-remote=auto"},
+  cmd = {"gopls", "serve"},
   on_attach = on_attach,
   capabilities = capabilities,
 }
