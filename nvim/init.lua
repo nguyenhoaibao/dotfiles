@@ -5,12 +5,8 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
   vim.fn.execute('!git clone https://github.com/wbthomason/packer.nvim ' .. install_path)
 end
 
-vim.cmd [[
-  augroup Packer
-    autocmd!
-    autocmd BufWritePost init.lua PackerCompile
-  augroup end
-]]
+local packer_group = vim.api.nvim_create_augroup('Packer', { clear = true })
+vim.api.nvim_create_autocmd('BufWritePost', { command = 'source <afile> | PackerCompile', group = packer_group, pattern = 'init.lua' })
 
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim'
@@ -121,16 +117,17 @@ vim.cmd [[
   augroup end
 
   autocmd BufNewFile,BufRead *.{js,ts,yaml} setlocal expandtab softtabstop=2 shiftwidth=2
+  autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=8 softtabstop=8 shiftwidth=8
 ]]
 
 --Remap space as leader key
-vim.api.nvim_set_keymap('', '<Space>', '<Nop>', { noremap = true, silent = true })
+vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 --Remap for dealing with word wrap
-vim.api.nvim_set_keymap('n', 'k', "v:count == 0 ? 'gk' : 'k'", { noremap = true, expr = true, silent = true })
-vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", { noremap = true, expr = true, silent = true })
+vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 vim.api.nvim_set_keymap('n', '<Leader>w', ':w<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<Leader>nh', ':noh<CR><c-l>', { noremap = true })
@@ -172,9 +169,9 @@ vim.g.NERDCommentEmptyLines = 1
 vim.g.NERDTrimTrailingWhitespace = 1
 
 -- ultisnips
-vim.g.UltiSnipsExpandTrigger="<c-j>"
-vim.g.UltiSnipsJumpForwardTrigner="<c-b>"
-vim.g.UltiSnipsJumpBackwardTrigger="<c-z>"
+-- vim.g.UltiSnipsExpandTrigger="<c-j>"
+-- vim.g.UltiSnipsJumpForwardTrigner="<c-b>"
+-- vim.g.UltiSnipsJumpBackwardTrigger="<c-z>"
 
 -- vim-tmux-navigator
 vim.api.nvim_set_keymap('', '<BS>', ':<C-u>TmuxNavigateLeft<CR>', {})
@@ -322,11 +319,19 @@ require('telescope').setup {
 -- Enable telescope fzf native
 require('telescope').load_extension 'fzf'
 
-vim.api.nvim_set_keymap('n', '<leader>pb', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>pf', [[<cmd>lua require('telescope.builtin').find_files({previewer = false, hidden = true})<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '\\\\', [[<cmd>lua require('telescope.builtin').grep_string({hidden = true})<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '\\', [[<cmd>lua require('telescope.builtin').live_grep({hidden = true})<CR>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '\\r', [[<cmd>lua require('telescope').extensions.live_grep_raw.live_grep_raw({hidden = true})<CR>]], { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>pb', require('telescope.builtin').buffers)
+vim.keymap.set('n', '<leader>pf', function()
+  require('telescope.builtin').find_files { previewer = false }
+end)
+vim.keymap.set('n', '\\\\', function()
+  require('telescope.builtin').grep_string { hidden = true }
+end)
+vim.keymap.set('n', '\\', function()
+  require('telescope.builtin').live_grep { hidden = true }
+end)
+vim.keymap.set('n', '\\r', function()
+  require('telescope').extensions.live_grep_raw.live_grep_raw { hidden = true }
+end)
 
 cfg = {
   bind = true,
@@ -336,14 +341,6 @@ cfg = {
   },
 }
 require 'lsp_signature'.setup(cfg)
-
--- Diagnostic keymaps
-vim.diagnostic.config({virtual_text = false})
-vim.api.nvim_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', { noremap = true, silent = true })
--- vim.cmd [[autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
 
 function org_imports(wait_ms)
   local params = vim.lsp.util.make_range_params()
@@ -369,19 +366,28 @@ vim.cmd [[
   augroup END
 ]]
 
+-- Diagnostic keymaps
+vim.diagnostic.config({virtual_text = false})
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+vim.keymap.set('n', 'ld', require('telescope.builtin').diagnostics)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
+
 -- LSP settings
 local lspconfig = require 'lspconfig'
-local on_attach = function(_, bufnr)
-  local opts = { noremap = true, silent = true }
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-]>', [[<cmd>lua require('telescope.builtin').lsp_definitions()<CR>]], opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'li', [[<cmd>lua require('telescope.builtin').lsp_implementations()<CR>]], opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'lrn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'lr', [[<cmd>lua require('telescope.builtin').lsp_references()<CR>]], opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'lic', '<cmd>lua vim.lsp.buf.incoming_calls()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'loc', '<cmd>lua vim.lsp.buf.outgoing_calls()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'lca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'lds', [[<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>]], opts)
+local on_attach = function(client, bufnr)
+  local opts = { noremap=true, silent=true, buffer=bufnr }
+  vim.keymap.set('n', '<C-]>', require('telescope.builtin').lsp_definitions, opts)
+  vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+  vim.keymap.set('n', 'li', require('telescope.builtin').lsp_implementations, opts)
+  vim.keymap.set('n', 'lrn', vim.lsp.buf.rename, opts)
+  vim.keymap.set('n', 'lr', require('telescope.builtin').lsp_references, opts)
+  vim.keymap.set('n', 'lic', vim.lsp.buf.incoming_calls, opts)
+  vim.keymap.set('n', 'loc', vim.lsp.buf.outgoing_calls, opts)
+  vim.keymap.set('n', 'lca', vim.lsp.buf.code_action, opts)
+  vim.keymap.set('n', 'lds', require('telescope.builtin').lsp_document_symbols, opts)
+  vim.keymap.set('n', '<leader>gb', require('telescope.builtin').git_bcommits, opts)
 end
 
 -- nvim-cmp supports additional completion capabilities
@@ -398,6 +404,11 @@ lspconfig.gopls.setup {
   cmd = {"gopls", "serve"},
   on_attach = on_attach,
   capabilities = capabilities,
+  settings = {
+    gopls = {
+      usePlaceholders = false,
+    },
+  },
 }
 
 lspconfig.rust_analyzer.setup {
@@ -424,14 +435,10 @@ cmp.setup {
       vim.fn["vsnip#anonymous"](args.body)
     end,
   },
-  mapping = {
-    ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-    ['<C-u>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-    ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-    ['<C-e>'] = cmp.mapping({
-      i = cmp.mapping.abort(),
-      c = cmp.mapping.close(),
-    }),
+  mapping = cmp.mapping.preset.insert({
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-u>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
@@ -447,7 +454,7 @@ cmp.setup {
       behavior = cmp.ConfirmBehavior.Replace,
       select = true,
     },
-  },
+  }),
   sources = {
     { name = 'nvim_lsp' },
     { name = 'vsnip' },
