@@ -29,7 +29,6 @@ require('packer').startup(function(use)
   use 'ntpeters/vim-better-whitespace'
   use 'christoomey/vim-tmux-navigator'
   use 'terryma/vim-multiple-cursors'
-  use 'sirver/ultisnips'
   use 'ianding1/leetcode.vim'
   use 'nguyenhoaibao/vim-base64'
   use 'dhruvasagar/vim-zoom'
@@ -65,13 +64,17 @@ require('packer').startup(function(use)
   use 'williamboman/mason.nvim'
   use 'williamboman/mason-lspconfig.nvim'
   use 'jose-elias-alvarez/null-ls.nvim'
-  use { 'neovim/nvim-lspconfig' }
-  use { 'hrsh7th/nvim-cmp', requires = { 'hrsh7th/cmp-nvim-lsp' } }
-  use { 'hrsh7th/cmp-vsnip', requires = { 'hrsh7th/nvim-cmp' } }
-  use 'hrsh7th/vim-vsnip'
+  use 'neovim/nvim-lspconfig'
+  use 'ray-x/lsp_signature.nvim'
+
+  use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-path'
-  use 'ray-x/lsp_signature.nvim'
+  use 'hrsh7th/nvim-cmp'
+  use 'L3MON4D3/LuaSnip'
+  use 'saadparwaiz1/cmp_luasnip'
+
+  use 'github/copilot.vim'
 
   use 'ray-x/go.nvim'
   use 'ray-x/guihua.lua'
