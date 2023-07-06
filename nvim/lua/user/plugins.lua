@@ -61,11 +61,16 @@ require('packer').startup(function(use)
   use 'nvim-lualine/lualine.nvim'
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
 
-  use 'williamboman/mason.nvim'
+  use {
+    "williamboman/mason.nvim",
+    run = ":MasonUpdate" -- :MasonUpdate updates registry contents
+  }
   use 'williamboman/mason-lspconfig.nvim'
   use 'jose-elias-alvarez/null-ls.nvim'
   use 'neovim/nvim-lspconfig'
   use 'ray-x/lsp_signature.nvim'
+  use 'onsails/lspkind.nvim'
+  -- use 'RRethy/vim-illuminate'
 
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'

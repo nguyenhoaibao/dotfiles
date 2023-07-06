@@ -1,7 +1,7 @@
 local M = {}
 
 M.setup = function(on_attach, capabilities)
-  require('lspconfig').sumneko_lua.setup({
+  require('lspconfig').lua_ls.setup({
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
@@ -10,7 +10,7 @@ M.setup = function(on_attach, capabilities)
           -- Tell the language server which version of Lua you're using (most likely LuaJIT)
           version = 'LuaJIT',
           -- Setup your lua path
-          path = runtime_path,
+          -- path = runtime_path,
         },
         diagnostics = {
           globals = { 'vim' },

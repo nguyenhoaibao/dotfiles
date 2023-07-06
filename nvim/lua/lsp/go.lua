@@ -1,8 +1,7 @@
-local go = require('go')
 local M = {}
 
 M.setup = function(on_attach, capabilities, lsp_keymaps)
-  go.setup({
+  require('go').setup({
     gofmt = 'gopls',
     lsp_cfg = {
       capabilities = capabilities,
@@ -16,7 +15,7 @@ M.setup = function(on_attach, capabilities, lsp_keymaps)
   })
 end
 
-local go_fmt_group = vim.api.nvim_create_augroup('go_fmt', { clear = true })
+local go_fmt_group = vim.api.nvim_create_augroup('GoImport', { clear = true })
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = '*.go',
   group = go_fmt_group,

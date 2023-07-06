@@ -30,7 +30,7 @@ local on_attach = function(client, bufnr)
       group = augroup,
       buffer = bufnr,
       callback = function()
-        vim.lsp.buf.formatting_sync(nil, 3000)
+        vim.lsp.buf.format { async = false }
       end,
     })
   end
@@ -44,13 +44,14 @@ require("mason").setup()
 
 local servers = {
   'go',
-  'pyright',
-  'tsserver',
-  'terraformls',
+  'move_analyzer',
   'null-ls',
+  'pyright',
   'rust_analyzer',
-  'sumneko_lua',
   -- 'solidity_ls',
+  'sumneko_lua',
+  'terraformls',
+  'tsserver',
 }
 
 require("mason-lspconfig").setup({
