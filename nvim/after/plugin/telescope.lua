@@ -10,9 +10,9 @@ telescope.setup {
   defaults = {
     extension = {
       fzf = {
-        fuzzy = true,                    -- false will only do exact matching
-        override_generic_sorter = true,  -- override the generic sorter
-        override_file_sorter = true,     -- override the file sorter
+        fuzzy = true, -- false will only do exact matching
+        override_generic_sorter = true, -- override the generic sorter
+        override_file_sorter = true, -- override the file sorter
       }
     },
     vimgrep_arguments = {
@@ -28,6 +28,7 @@ telescope.setup {
     mappings = {
       i = {
         ['<esc>'] = actions.close,
+        -- ['NI'] = actions.quote_prompt({ postfix = '--no-ignore' }),
       },
     },
   },
@@ -42,3 +43,5 @@ telescope.setup {
 }
 
 telescope.load_extension('fzf')
+telescope.load_extension('refactoring')
+telescope.load_extension('live_grep_args')

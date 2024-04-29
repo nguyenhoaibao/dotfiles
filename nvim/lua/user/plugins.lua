@@ -46,13 +46,14 @@ require('packer').startup(function(use)
   }
   use { 'nvim-treesitter/nvim-treesitter-textobjects', requires = { 'nvim-treesitter/nvim-treesitter' } }
   use 'nvim-treesitter/nvim-treesitter-context'
+  use 'ThePrimeagen/refactoring.nvim'
 
   use {
     'nvim-telescope/telescope.nvim',
     branch = '0.1.x',
     requires = {
       'nvim-lua/plenary.nvim',
-      -- 'nvim-telescope/telescope-live-grep-raw.nvim',
+      'nvim-telescope/telescope-live-grep-args.nvim',
     },
   }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
@@ -83,6 +84,8 @@ require('packer').startup(function(use)
   use 'ray-x/guihua.lua'
 
   use 'github/copilot.vim'
+
+  use 'wolflo/vim-huff'
 
   if is_bootstrap then
     require('packer').sync()

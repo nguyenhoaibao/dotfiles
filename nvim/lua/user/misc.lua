@@ -1,5 +1,5 @@
 -- vim-better-whitespace
-vim.g.strip_whitespace_on_save = 1
+vim.g.strip_whitespace_on_save = 0
 vim.g.strip_whitespace_confirm = 0
 
 -- vim-tmux-navigator
@@ -15,3 +15,7 @@ vim.g.copilot_filetypes = {
   ["TelescopeResults"] = false,
   ["TelescopePrompt"] = false,
 }
+
+-- sops
+vim.api.nvim_create_user_command('SopsEnc', '!sops -e -i %:p', {})
+vim.api.nvim_create_user_command('SopsDec', '!sops -d -i %:p', {})

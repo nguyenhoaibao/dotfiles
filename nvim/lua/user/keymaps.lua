@@ -41,9 +41,20 @@ bind('n', '<Leader>/', function()
 end, opts)
 bind('n', '\\\\', ':Telescope grep_string<CR>', opts)
 bind('n', '\\', ':Telescope live_grep<CR>', opts)
+bind('n', '\\r', function()
+  require('telescope').extensions.live_grep_args.live_grep_args({
+    default_text = '--no-ignore "',
+  })
+end, opts)
 bind('n', '<Leader>gy', ':Telescope git_stash<CR>', opts)
 bind('n', '<Leader>gb', ':Telescope git_bcommits<CR>', opts)
 bind('n', '<Leader>fs', ':Telescope treesitter<CR>', opts)
+bind(
+  "v",
+  "<leader>rr",
+  "<Esc><cmd>lua require('telescope').extensions.refactoring.refactors()<CR>",
+  opts
+)
 
 bind('n', 'ld', ':Telescope diagnostics<CR>', opts)
 bind('n', '<Leader>e', vim.diagnostic.open_float, opts)

@@ -22,4 +22,17 @@ tree.setup({
   on_attach = on_attach,
 })
 
+-- tree.setup {
+--   view = {
+--     mappings = {
+--       list = {
+--         { key = "x", action = "split" },
+--         { key = "v", action = "vsplit" },
+--         { key = "m", action = "cut" },
+--         { key = "d", action = "trash" },
+--       }
+--     }
+--   }
+-- }
+
 vim.cmd('autocmd BufWinEnter NvimTree_* setlocal cursorline')

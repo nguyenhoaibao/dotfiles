@@ -30,7 +30,7 @@ local on_attach = function(client, bufnr)
       group = augroup,
       buffer = bufnr,
       callback = function()
-        vim.lsp.buf.format { async = false }
+        vim.lsp.buf.format { async = false, timeout_ms = 3000 }
       end,
     })
   end
@@ -57,6 +57,8 @@ local servers = {
 require("mason-lspconfig").setup({
   automatic_installation = true,
 })
+
+-- vim.lsp.set_log_level("debug")
 
 for _, server in ipairs(servers) do
   if server == 'go' then
