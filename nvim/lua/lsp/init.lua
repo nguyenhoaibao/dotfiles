@@ -3,19 +3,22 @@ if not status then
   return
 end
 
+local tls_builtin = require("telescope.builtin")
+
 local lsp_keymaps = function(bufnr)
   local opts = { silent = true, buffer = bufnr }
   local bind = function(keys, func)
     vim.keymap.set('n', keys, func, opts)
   end
 
-  bind('<C-]>', ':Telescope lsp_definitions<CR>')
+  bind('<C-]>', tls_builtin.lsp_definitions)
+  bind('gi', tls_builtin.lsp_implementations)
+  bind('gD', tls_builtin.lsp_type_definitions)
+  bind('gr', tls_builtin.lsp_references)
+  bind('ld', tls_builtin.diagnostics)
+  bind('<Leader>ic', tls_builtin.lsp_incoming_calls)
+  bind('<Leader>oc', tls_builtin.lsp_outgoing_calls)
   bind('K', vim.lsp.buf.hover)
-  bind('gi', ':Telescope lsp_implementations<CR>')
-  bind('gD', ':Telescope lsp_type_definitions<CR>')
-  bind('gr', ':Telescope lsp_references<CR>')
-  bind('<Leader>ic', ':Telescope lsp_incoming_calls<CR>')
-  bind('<Leader>oc', ':Telescope lsp_outgoing_calls<CR>')
   bind('<Leader>rn', vim.lsp.buf.rename)
   bind('<Leader>ca', vim.lsp.buf.code_action)
 end
@@ -44,7 +47,7 @@ require("mason").setup()
 
 local servers = {
   'go',
-  'move_analyzer',
+  -- 'move_analyzer',
   'null-ls',
   'pyright',
   'rust_analyzer',

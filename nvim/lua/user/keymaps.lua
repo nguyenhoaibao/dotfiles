@@ -2,6 +2,7 @@ local bind = vim.keymap.set
 local opts = { silent = true }
 
 local cmd = vim.api.nvim_create_user_command
+local tls_builtin = require('telescope.builtin')
 
 bind({ 'n', 'v' }, '<Space>', '<Nop>')
 vim.g.mapleader = ' '
@@ -29,23 +30,25 @@ bind('n', '<Leader>d', ':NvimTreeToggle<CR>', opts)
 bind('n', 'F', ':NvimTreeFindFileToggle<CR>', opts)
 
 -- telescope
-bind('n', '<Leader>pb', ':Telescope buffers<CR>', opts)
+bind('n', '<Leader>pb', tls_builtin.buffers, opts)
 bind('n', '<Leader>pf', function()
-  require('telescope.builtin').find_files { hidden = true, previewer = false }
+  tls_builtin.find_files { hidden = true, previewer = false }
 end, opts)
 bind('n', '<Leader>/', function()
-  require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+  tls_builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
     winblend = 10,
     previewer = false,
   })
 end, opts)
-bind('n', '\\\\', ':Telescope grep_string<CR>', opts)
-bind('n', '\\', ':Telescope live_grep<CR>', opts)
-bind('n', '<Leader>gy', ':Telescope git_stash<CR>', opts)
-bind('n', '<Leader>gb', ':Telescope git_bcommits<CR>', opts)
-bind('n', '<Leader>fs', ':Telescope treesitter<CR>', opts)
+bind('n', '\\\\', tls_builtin.grep_string, opts)
+bind('n', '\\', tls_builtin.live_grep, opts)
+bind('n', '<Leader>gy', tls_builtin.git_stash, opts)
+bind('n', '<Leader>gb', tls_builtin.git_bcommits, opts)
+vim.api.nvim_set_keymap('v', '<Leader>gbr', '<cmd>lua require("telescope.builtin").git_bcommits_range()<CR>',
+  { noremap = true, silent = true })
+bind('n', '<Leader>fs', tls_builtin.git_branches, opts)
 
-bind('n', 'ld', ':Telescope diagnostics<CR>', opts)
+-- bind('n', 'ld', tls_builtin.diagnostics, opts)
 bind('n', '<Leader>e', vim.diagnostic.open_float, opts)
 bind('n', '[d', vim.diagnostic.goto_prev, opts)
 bind('n', ']d', vim.diagnostic.goto_next, opts)

@@ -27,7 +27,7 @@ require('packer').startup(function(use)
   use 'tpope/vim-cucumber'
   use 'windwp/nvim-autopairs'
   use 'ntpeters/vim-better-whitespace'
-  use 'christoomey/vim-tmux-navigator'
+  use 'alexghergh/nvim-tmux-navigation'
   use 'terryma/vim-multiple-cursors'
   use 'ianding1/leetcode.vim'
   use 'nguyenhoaibao/vim-base64'

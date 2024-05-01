@@ -20,6 +20,9 @@ end
 
 tree.setup({
   on_attach = on_attach,
+  view = {
+    adaptive_size = true,
+  }
 })
 
 vim.cmd('autocmd BufWinEnter NvimTree_* setlocal cursorline')
