@@ -4,6 +4,7 @@ return {
   dependencies = {
     'hrsh7th/cmp-nvim-lsp',
     'ray-x/go.nvim',
+    'lvimuser/lsp-inlayhints.nvim',
   },
   config = function()
     local lspconfig = require('lspconfig')
@@ -59,10 +60,19 @@ return {
       bind('n', '<Leader>ca', vim.lsp.buf.code_action, opts)
     end
 
+    vim.api.nvim_create_augroup("UserLspConfig", {})
     vim.api.nvim_create_autocmd("LspAttach", {
-      group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-      callback = function(ev)
-        keymaps(ev.buf)
+      -- group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+      group = "UserLspConfig",
+      callback = function(args)
+        keymaps(args.buf)
+
+        if not (args.data and args.data.client_id) then
+          return
+        end
+        local bufnr = args.buf
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        require("lsp-inlayhints").on_attach(client, bufnr)
       end,
     })
 
@@ -83,6 +93,9 @@ return {
             capabilities = capabilities,
           },
           lsp_keymaps = false,
+          lsp_inlay_hints = {
+            enable = false,
+          },
           run_in_floaterm = true,
         })
       end,
@@ -95,6 +108,25 @@ return {
                 globals = { 'vim' },
               },
             },
+          },
+        })
+      end,
+      ["rust_analyzer"] = function()
+        lspconfig["rust_analyzer"].setup({
+          capabilities = capabilities,
+          settings = {
+            ["rust-analyzer"] = {
+              assist = {
+                importGranularity = "module",
+                importPrefix = "self",
+              },
+              cargo = {
+                loadOutDirsFromCheck = true
+              },
+              procMacro = {
+                enable = true
+              },
+            }
           },
         })
       end,
