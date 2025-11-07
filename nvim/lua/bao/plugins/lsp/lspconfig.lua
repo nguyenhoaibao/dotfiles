@@ -1,10 +1,21 @@
 return {
   'neovim/nvim-lspconfig',
+  version = "*",
   event = { 'BufReadPre', 'BufNewFile' },
   dependencies = {
     'hrsh7th/cmp-nvim-lsp',
-    'ray-x/go.nvim',
-    'lvimuser/lsp-inlayhints.nvim',
+    'williamboman/mason.nvim',
+    'williamboman/mason-lspconfig.nvim',
+    'nvim-treesitter/nvim-treesitter',
+    {
+      'ray-x/go.nvim',
+      version = "*",
+      event = { "CmdlineEnter" },
+      ft = { "go", 'gomod' },
+      dependencies = { -- optional packages
+        "ray-x/guihua.lua",
+      },
+    },
   },
   config = function()
     local lspconfig = require('lspconfig')
@@ -67,12 +78,14 @@ return {
       callback = function(args)
         keymaps(args.buf)
 
+        -- vim.lsp.inlay_hint.enable(true, { 0 })
+
         if not (args.data and args.data.client_id) then
           return
         end
-        local bufnr = args.buf
-        local client = vim.lsp.get_client_by_id(args.data.client_id)
-        require("lsp-inlayhints").on_attach(client, bufnr)
+        -- local bufnr = args.buf
+        -- local client = vim.lsp.get_client_by_id(args.data.client_id)
+        -- require("lsp-inlayhints").on_attach(client, bufnr)
       end,
     })
 
@@ -91,12 +104,21 @@ return {
           gofmt = 'gopls',
           lsp_cfg = {
             capabilities = capabilities,
+            settings = {
+              gopls = {
+                analyses = {
+                  fieldalignment = false,
+                }
+              }
+            }
           },
           lsp_keymaps = false,
           lsp_inlay_hints = {
             enable = false,
           },
           run_in_floaterm = true,
+          luasnip = false,
+          iferr_vertical_shift = 4,
         })
       end,
       ["lua_ls"] = function()

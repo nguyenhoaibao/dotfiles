@@ -1,19 +1,31 @@
 return {
-  "williamboman/mason.nvim",
-  dependencies = {
-    "williamboman/mason-lspconfig.nvim",
+  {
+    "williamboman/mason.nvim",
+    cmd = "Mason",
+    version = "*",
+    config = function()
+      require("mason").setup()
+    end
   },
-  config = function()
-    require('mason').setup()
-    require("mason-lspconfig").setup({
-      ensure_installed = {
-        "gopls",
-        "pyright",
-        'rust_analyzer',
-        'jsonls',
-        'tsserver',
-        'lua_ls',
-      }
-    })
-  end,
+  {
+    "williamboman/mason-lspconfig.nvim",
+    version = "*",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      'williamboman/mason.nvim'
+    },
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          "gopls",
+          "pyright",
+          'rust_analyzer',
+          'jsonls',
+          'ts_ls',
+          'lua_ls',
+          'solidity_ls_nomicfoundation',
+        }
+      })
+    end,
+  }
 }

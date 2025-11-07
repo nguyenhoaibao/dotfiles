@@ -1,3 +1,7 @@
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- search settings
 vim.opt.smartcase = true
 vim.opt.ignorecase = true
@@ -8,6 +12,8 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.numberwidth = 2
 vim.opt.signcolumn = 'yes'
+
+vim.opt.laststatus = 3
 
 -- split settings
 vim.opt.splitbelow = true
@@ -34,3 +40,9 @@ vim.opt.timeoutlen = 450
 vim.opt.shortmess:append('c')
 
 vim.opt.termguicolors = true
+
+vim.opt.foldmethod = "expr"
+vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevelstart = 99
+
+vim.lsp.set_log_level("off")

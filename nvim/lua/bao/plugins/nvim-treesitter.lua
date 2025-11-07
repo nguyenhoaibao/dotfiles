@@ -14,16 +14,19 @@ return {
       indent = {
         enable = true,
       },
-      ensure_installed = {
-        'go',
-        'hcl',
-        'lua',
-        'rust',
-        'solidity',
-        'terraform',
-        'typescript',
-        'yaml',
-      },
+      auto_install = false,
+      sync_install = false,
+      -- ensure_installed = {
+      --   'go',
+      --   'hcl',
+      --   'lua',
+      --   'rust',
+      --   'solidity',
+      --   'terraform',
+      --   'typescript',
+      --   'yaml',
+      --   'html',
+      -- },
       incremental_selection = {
         enable = true,
         keymaps = {
